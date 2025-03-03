@@ -1,12 +1,14 @@
-from pydantic_settings import BaseSettings
-from pydantic import Field
 from keycloak import KeycloakOpenID
+from pydantic import Field
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
     DEVELOPMENT: bool = Field(env="DEVELOPMENT", default=False)
     LOG_LEVEL: str = Field(env="LOG_LEVEL", default="INFO")
-    EXTERNAL_URL: str = Field(env="EXTERNAL_URL", default="https://customer.helpwave.de")
+    EXTERNAL_URL: str = Field(
+        env="EXTERNAL_URL", default="https://customer.helpwave.de"
+    )
 
     DATABASE_HOSTNAME: str = Field(env="DATABASE_HOSTNAME", default="postgres")
     DATABASE_NAME: str = Field(env="DATABASE_NAME", default="customer")

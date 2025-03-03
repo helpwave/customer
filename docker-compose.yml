@@ -41,7 +41,27 @@ services:
     volumes:
       - "postgres-data:/var/lib/postgresql/data"
     ports:
-      - "5433:5432"
+      - "5432:5432"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    user: "root"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "8090:80"
+    volumes:
+      - pgadmin4-data:/var/lib/pgadmin
+    entrypoint: >
+      /bin/sh -c '
+      echo "postgres:5432:*:admin:admin" > /tmp/pgpass;
+      chmod 600 /tmp/pgpass;
+      echo "{\"Servers\":{\"1\":{\"Name\":\"postgres\",\"Group\":\"Servers\",\"Host\":\"postgres\",\"Port\":5432,\"MaintenanceDB\":\"postgres\",\"Username\":\"postgres\",\"PassFile\":\"/tmp/pgpass\",\"SSLMode\":\"prefer\"}}}" > /pgadmin4/servers.json;
+      /entrypoint.sh'
 
   customer-api:
     build: app
@@ -67,3 +87,4 @@ services:
 volumes:
   keycloak-postgres-data:
   postgres-data:
+  pgadmin4-data:
