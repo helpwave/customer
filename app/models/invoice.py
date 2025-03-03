@@ -1,11 +1,10 @@
 from datetime import datetime
 from uuid import uuid4
 
+from models.static import InvoiceStatusEnum
 from sqlalchemy import Column, DateTime, Enum, ForeignKey, Numeric
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
-
-from models.static import InvoiceStatusEnum
 from utils.database.connection import Base
 
 

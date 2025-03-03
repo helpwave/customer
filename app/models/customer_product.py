@@ -4,7 +4,6 @@ from uuid import uuid4
 from sqlalchemy import Column, DateTime, ForeignKey, Integer
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
-
 from utils.database.connection import Base
 
 
