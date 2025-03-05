@@ -1,10 +1,13 @@
 from datetime import datetime
+from uuid import UUID as UUID4
 from uuid import uuid4
 
-from models.static import PlanTypeEnum
+from pydantic import BaseModel
 from sqlalchemy import Boolean, Column, DateTime, Enum, ForeignKey, Numeric
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
+
+from models.static import PlanTypeEnum
 from utils.database.connection import Base
 
 
@@ -24,3 +27,12 @@ class ProductPlan(Base):
     )
 
     product = relationship("Product", back_populates="plans")
+
+
+class ProductPlanBase(BaseModel):
+    uuid: UUID4
+    type: PlanTypeEnum
+    cost_euro: float
+    seat_based: bool
+    created_at: datetime
+    updated_at: datetime

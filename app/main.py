@@ -4,6 +4,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.exc import OperationalError
+
+from routers.customer import router as customer_router
+from routers.product import router as product_router
 from utils.config import settings
 from utils.database.connection import engine
 
@@ -15,7 +18,7 @@ logging.basicConfig(
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(_: FastAPI):
     try:
         engine.connect()
     except OperationalError:
@@ -26,6 +29,9 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="helpwave customer", lifespan=lifespan)
+
+app.include_router(customer_router)
+app.include_router(product_router)
 
 origins = ["*" if settings.DEVELOPMENT else settings.EXTERNAL_URL]
 app.add_middleware(
