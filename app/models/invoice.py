@@ -19,8 +19,6 @@ class Invoice(Base):
     date = Column(DateTime, nullable=False)
     total_amount = Column(Numeric, nullable=False)
     created_at = Column(DateTime, default=datetime.now)
-    updated_at = Column(
-        DateTime, default=datetime.now, onupdate=datetime.now
-    )
+    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     customer = relationship("Customer", back_populates="invoices")

@@ -13,4 +13,3 @@ async def valid(code: str, session=Depends(get_database)):
         raise HTTPException(status_code=404, detail="Voucher not found.")
 
     return voucher
-

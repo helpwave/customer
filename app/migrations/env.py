@@ -4,7 +4,9 @@ from alembic import context
 from models.contract import Contract  # noqa: F401
 from models.customer import Customer  # noqa: F401
 from models.customer_product import CustomerProduct  # noqa: F401
-from models.customer_product_contract import CustomerProductContract  # noqa: F401
+from models.customer_product_contract import (
+    CustomerProductContract,
+)  # noqa: F401
 from models.inbox_message import InboxMessage  # noqa: F401
 from models.invoice import Invoice  # noqa: F401
 from models.product import Product  # noqa: F401

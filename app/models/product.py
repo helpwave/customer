@@ -17,9 +17,7 @@ class Product(Base):
     name = Column(String, nullable=False)
     description = Column(Text)
     created_at = Column(DateTime, default=datetime.now)
-    updated_at = Column(
-        DateTime, default=datetime.now, onupdate=datetime.now
-    )
+    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     plans = relationship(ProductPlan, back_populates="product")
 

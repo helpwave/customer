@@ -16,10 +16,18 @@ class Settings(BaseSettings):
     DATABASE_PASSWORD: str = Field(env="DATABASE_PASSWORD", default="customer")
     DATABASE_PORT: int = Field(env="DATABASE_PORT", default=5432)
 
-    KEYCLOAK_SERVER_URL: str = Field(env="KEYCLOAK_SERVER_URL", default="https://id.helpwave.de")
-    KEYCLOAK_REALM: str = Field(env="KEYCLOAK_REALM", default="customer-api-realm")
-    KEYCLOAK_CLIENT_ID: str = Field(env="KEYCLOAK_CLIENT_ID", default="customer-api-keycloak")
-    KEYCLOAK_CLIENT_SECRET: str = Field(env="KEYCLOAK_CLIENT_SECRET", default="customer-api-client-secret")
+    KEYCLOAK_SERVER_URL: str = Field(
+        env="KEYCLOAK_SERVER_URL", default="https://id.helpwave.de"
+    )
+    KEYCLOAK_REALM: str = Field(
+        env="KEYCLOAK_REALM", default="customer-api-realm"
+    )
+    KEYCLOAK_CLIENT_ID: str = Field(
+        env="KEYCLOAK_CLIENT_ID", default="customer-api-keycloak"
+    )
+    KEYCLOAK_CLIENT_SECRET: str = Field(
+        env="KEYCLOAK_CLIENT_SECRET", default="customer-api-client-secret"
+    )
 
     class Config:
         env_file = ".env"

@@ -19,8 +19,7 @@ async def read(uuid: UUID, session=Depends(get_database)):
 
     return contract
 
+
 @router.get("/", response_model=list[ContractBase])
 async def read_all(session=Depends(get_database)):
     return session.query(Contract).all()
-
- 

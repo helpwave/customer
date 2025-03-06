@@ -32,9 +32,7 @@ class Voucher(Base):
     max_redemptions = Column(Integer, nullable=False)
     redeemed_count = Column(Integer, default=0)
     created_at = Column(DateTime, default=datetime.now)
-    updated_at = Column(
-        DateTime, default=datetime.now, onupdate=datetime.now
-    )
+    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     @property
     def valid(self) -> bool:
