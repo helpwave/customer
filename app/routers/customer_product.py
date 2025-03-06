@@ -14,7 +14,7 @@ from utils.database.session import get_database
 router = APIRouter(prefix="/customer/product", tags=["CustomerProduct"])
 
 
-@router.put("/", response_model=CustomerProductBase)
+@router.post("/", response_model=CustomerProductBase)
 async def create(data: CustomerProductCreate, session=Depends(get_database)):
     customer = (
         session.query(Customer).filter_by(uuid=data.customer_uuid).first()

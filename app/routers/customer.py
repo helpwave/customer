@@ -12,7 +12,7 @@ from utils.database.session import get_database
 router = APIRouter(prefix="/customer", tags=["Customer"])
 
 
-@router.put("/", response_model=CustomerBase)
+@router.post("/", response_model=CustomerBase)
 async def create(data: CustomerCreate, session=Depends(get_database)):
     customer = Customer(
         name=data.name,
@@ -44,7 +44,7 @@ async def read(uuid: UUID, session=Depends(get_database)):
     return customer
 
 
-@router.post("/", response_model=CustomerBase)
+@router.put("/", response_model=CustomerBase)
 async def update(data: CustomerUpdate, session=Depends(get_database)):
     customer = session.query(Customer).filter_by(uuid=data.uuid).first()
 
