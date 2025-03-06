@@ -33,7 +33,7 @@ async def create(data: CustomerProductCreate, session=Depends(get_database)):
         raise HTTPException(404, detail="Plan does not exist on that product.")
 
     customer_product = CustomerProduct(
-        customer_uuid=data.customer_uuid,  # TODO replace it with current user customer
+        customer_uuid=data.customer_uuid,
         product_uuid=data.product_uuid,
         product_plan=data.product_plan_uuid,
     )
