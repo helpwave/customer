@@ -1,7 +1,9 @@
+# flake8: noqa
 from logging.config import fileConfig
 
 from alembic import context
 from sqlalchemy import engine_from_config, pool
+
 from utils.database.connection import SQLALCHEMY_DATABASE_URL, Base
 
 # this is the Alembic Config object, which provides

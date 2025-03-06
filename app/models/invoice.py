@@ -1,10 +1,11 @@
 from datetime import datetime
 from uuid import uuid4
 
-from models.static import InvoiceStatusEnum
 from sqlalchemy import Column, DateTime, Enum, ForeignKey, Numeric
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
+
+from models.static import InvoiceStatusEnum
 from utils.database.connection import Base
 
 
@@ -18,9 +19,7 @@ class Invoice(Base):
     status = Column(Enum(InvoiceStatusEnum), nullable=False)
     date = Column(DateTime, nullable=False)
     total_amount = Column(Numeric, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
-    )
+    created_at = Column(DateTime, default=datetime.now)
+    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     customer = relationship("Customer", back_populates="invoices")
