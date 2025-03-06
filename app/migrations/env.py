@@ -1,20 +1,18 @@
 from logging.config import fileConfig
 
 from alembic import context
+from models.contract import Contract  # noqa: F401
+from models.customer import Customer  # noqa: F401
+from models.customer_product import CustomerProduct  # noqa: F401
+from models.customer_product_contract import CustomerProductContract  # noqa: F401
+from models.inbox_message import InboxMessage  # noqa: F401
+from models.invoice import Invoice  # noqa: F401
+from models.product import Product  # noqa: F401
+from models.product_plan import ProductPlan  # noqa: F401
+from models.user import User  # noqa: F401
+from models.voucher import Voucher  # noqa: F401
 from sqlalchemy import engine_from_config, pool
-
 from utils.database.connection import SQLALCHEMY_DATABASE_URL, Base
-
-from models.contract import Contract
-from models.customer import Customer
-from models.customer_product import CustomerProduct
-from models.customer_product_contract import CustomerProductContract
-from models.inbox_message import InboxMessage
-from models.invoice import Invoice
-from models.product import Product
-from models.product_plan import ProductPlan
-from models.user import User
-from models.voucher import Voucher
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

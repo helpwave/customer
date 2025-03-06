@@ -1,10 +1,9 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
-
 from models.contract import (
-        Contract,
-        ContractBase,
+    Contract,
+    ContractBase,
 )
 from utils.database.session import get_database
 

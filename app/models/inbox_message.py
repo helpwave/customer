@@ -1,11 +1,10 @@
 from datetime import datetime
 from uuid import uuid4
 
+from models.static import MessageStatusEnum
 from sqlalchemy import Column, DateTime, Enum, ForeignKey, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
-
-from models.static import MessageStatusEnum
 from utils.database.connection import Base
 
 

@@ -3,14 +3,12 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.exc import OperationalError
-
-from routers.customer import router as customer_router
-from routers.product import router as product_router
-from routers.customer_product import router as customer_product_router
-from routers.voucher import router as voucher_router
 from routers.contract import router as contract_router
-
+from routers.customer import router as customer_router
+from routers.customer_product import router as customer_product_router
+from routers.product import router as product_router
+from routers.voucher import router as voucher_router
+from sqlalchemy.exc import OperationalError
 from utils.config import settings
 from utils.database.connection import engine
 

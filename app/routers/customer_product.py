@@ -1,17 +1,14 @@
+from datetime import datetime
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
-
+from models.customer import Customer
 from models.customer_product import (
     CustomerProduct,
     CustomerProductBase,
     CustomerProductCreate,
 )
-from datetime import datetime
-
-from models.customer import Customer
 from models.product import Product
-
 from utils.database.session import get_database
 
 router = APIRouter(prefix="/customer/product", tags=["CustomerProduct"])

@@ -1,7 +1,6 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
-
 from models.customer import (
     Customer,
     CustomerBase,

@@ -1,12 +1,11 @@
 from datetime import datetime
-from uuid import uuid4, UUID as UUID4
+from uuid import UUID as UUID4
+from uuid import uuid4
 
+from pydantic import BaseModel
 from sqlalchemy import Column, DateTime, ForeignKey, Integer
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
-
-from pydantic import BaseModel
-
 from utils.database.connection import Base
 
 
