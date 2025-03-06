@@ -36,7 +36,6 @@ class Settings(BaseSettings):
 
 settings = Settings()
 
-
 keycloak_openid = KeycloakOpenID(
     server_url=settings.KEYCLOAK_SERVER_URL,
     realm_name=settings.KEYCLOAK_REALM,

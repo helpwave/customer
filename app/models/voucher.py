@@ -13,6 +13,7 @@ from sqlalchemy import (
     Text,
 )
 from sqlalchemy.dialects.postgresql import UUID
+
 from utils.database.connection import Base
 
 
@@ -23,7 +24,7 @@ class Voucher(Base):
     code = Column(String, unique=True, nullable=False)
     description = Column(Text)
     product_plan_uuid = Column(
-        UUID(as_uuid=True), ForeignKey("product_plans.uuid"), nullable=True
+        UUID(as_uuid=True), ForeignKey("product_plans.uuid"), nullable=False
     )
     discount_percentage = Column(Numeric, nullable=True)
     discount_fixed_amount = Column(Numeric, nullable=True)
@@ -39,7 +40,7 @@ class Voucher(Base):
         now = datetime.now()
         time_validity = bool(self.valid_from <= now <= self.valid_until)
 
-        redemption_validity = bool(self.redeemed_count <= self.max_redemptions)
+        redemption_validity = bool(self.redeemed_count < self.max_redemptions)
 
         return time_validity and redemption_validity
 
@@ -48,6 +49,6 @@ class VoucherBase(BaseModel):
     uuid: UUID4
     description: str
     product_plan_uuid: UUID4
-    discount_percentage: float
-    discount_fixed_amount: float
+    discount_percentage: float | None
+    discount_fixed_amount: float | None
     valid: bool

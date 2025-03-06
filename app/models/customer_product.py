@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from sqlalchemy import Column, DateTime, ForeignKey, Integer
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
+
 from utils.database.connection import Base
 
 
@@ -41,17 +42,16 @@ class CustomerProductBase(BaseModel):
     customer_uuid: UUID4
     product_uuid: UUID4
     product_plan_uuid: UUID4
-    seats: int
+    seats: int | None
     start_date: datetime
-    next_payment_date: datetime
-    voucher_uuid: UUID4
+    next_payment_date: datetime | None
+    voucher_uuid: UUID4 | None
     cancellation_date: datetime | None
     created_at: datetime
     updated_at: datetime
 
 
 class CustomerProductCreate(BaseModel):
-    customer_uuid: UUID4
     product_uuid: UUID4
     product_plan_uuid: UUID4
-    voucher_uuid: UUID4
+    voucher_uuid: UUID4 | None

@@ -2,14 +2,15 @@ from datetime import datetime
 from uuid import UUID as UUID4
 from uuid import uuid4
 
-from models.customer_product import CustomerProduct
-from models.inbox_message import InboxMessage
-from models.invoice import Invoice
-from models.user import User
 from pydantic import BaseModel
 from sqlalchemy import Column, DateTime, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
+
+from models.customer_product import CustomerProduct
+from models.inbox_message import InboxMessage
+from models.invoice import Invoice
+from models.user import User
 from utils.database.connection import Base
 
 
@@ -19,13 +20,14 @@ class Customer(Base):
     uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     name = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False)
+
     website_url = Column(String)
-    address = Column(String)
-    house_number = Column(String)
+    address = Column(String, nullable=False)
+    house_number = Column(String, nullable=False)
     care_of = Column(String)
-    postal_code = Column(String)
-    city = Column(String)
-    country = Column(String)
+    postal_code = Column(String, nullable=False)
+    city = Column(String, nullable=False)
+    country = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
@@ -67,7 +69,6 @@ class CustomerRead(BaseModel):
 
 
 class CustomerUpdate(BaseModel):
-    uuid: UUID4
     name: str | None
     email: str | None
     website_url: str | None

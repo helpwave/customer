@@ -2,21 +2,8 @@
 from logging.config import fileConfig
 
 from alembic import context
-
-from models.contract import Contract
-from models.customer import Customer
-from models.customer_product import CustomerProduct
-from models.customer_product_contract import (
-    CustomerProductContract,
-)
-from models.inbox_message import InboxMessage
-from models.invoice import Invoice
-from models.product import Product
-from models.product_plan import ProductPlan
-from models.user import User
-from models.voucher import Voucher
-
 from sqlalchemy import engine_from_config, pool
+
 from utils.database.connection import SQLALCHEMY_DATABASE_URL, Base
 
 # this is the Alembic Config object, which provides

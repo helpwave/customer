@@ -1,10 +1,8 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
-from models.contract import (
-    Contract,
-    ContractBase,
-)
+
+from models.contract import Contract, ContractBase
 from utils.database.session import get_database
 
 router = APIRouter(prefix="/contract", tags=["Contract"])

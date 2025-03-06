@@ -1,19 +1,28 @@
-from uuid import UUID
-
 from fastapi import APIRouter, Depends, HTTPException
+
 from models.customer import (
     Customer,
     CustomerBase,
     CustomerCreate,
     CustomerUpdate,
+    User,
 )
+from models.static import RoleEnum
 from utils.database.session import get_database
+from utils.security.token import get_user
 
 router = APIRouter(prefix="/customer", tags=["Customer"])
 
 
 @router.post("/", response_model=CustomerBase)
-async def create(data: CustomerCreate, session=Depends(get_database)):
+async def create(
+    data: CustomerCreate,
+    user: User = Depends(get_user),
+    session=Depends(get_database),
+):
+    if user.customer:
+        raise HTTPException(400, detail="User already created a Customer.")
+
     customer = Customer(
         name=data.name,
         email=data.email,
@@ -28,15 +37,18 @@ async def create(data: CustomerCreate, session=Depends(get_database)):
 
     session.add(customer)
     session.commit()
-
     session.refresh(customer)
+
+    user.customer_uuid = customer.uuid
+    user.role = RoleEnum.ADMIN
+    session.commit()
 
     return customer
 
 
-@router.get("/{uuid}", response_model=CustomerBase)
-async def read(uuid: UUID, session=Depends(get_database)):
-    customer = session.query(Customer).filter_by(uuid=uuid).first()
+@router.get("/", response_model=CustomerBase)
+async def read(user: User = Depends(get_user)):
+    customer = user.customer
 
     if not customer:
         raise HTTPException(status_code=404, detail="Customer not found.")
@@ -45,8 +57,12 @@ async def read(uuid: UUID, session=Depends(get_database)):
 
 
 @router.put("/", response_model=CustomerBase)
-async def update(data: CustomerUpdate, session=Depends(get_database)):
-    customer = session.query(Customer).filter_by(uuid=data.uuid).first()
+async def update(
+    data: CustomerUpdate,
+    user: User = Depends(get_user),
+    session=Depends(get_database),
+):
+    customer = user.customer
 
     if not customer:
         raise HTTPException(status_code=404, detail="Customer not found.")
@@ -65,14 +81,3 @@ async def update(data: CustomerUpdate, session=Depends(get_database)):
     session.refresh(customer)
 
     return customer
-
-
-@router.delete("/{uuid}")
-async def delete(uuid: UUID, session=Depends(get_database)):
-    customer = session.query(Customer).filter_by(uuid=uuid).first()
-
-    if not customer:
-        raise HTTPException(status_code=404, detail="Customer not found.")
-
-    session.delete(customer)
-    session.commit()

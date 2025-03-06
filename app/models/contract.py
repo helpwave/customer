@@ -2,10 +2,11 @@ from datetime import datetime
 from uuid import UUID as UUID4
 from uuid import uuid4
 
-from models.static import ContractKeyEnum
 from pydantic import BaseModel
 from sqlalchemy import Column, DateTime, Enum, String
 from sqlalchemy.dialects.postgresql import UUID
+
+from models.static import ContractKeyEnum
 from utils.database.connection import Base
 
 
