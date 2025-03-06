@@ -17,9 +17,9 @@ class Product(Base):
     uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     name = Column(String, nullable=False)
     description = Column(Text)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime, default=datetime.now, onupdate=datetime.now
     )
 
     plans = relationship(ProductPlan, back_populates="product")

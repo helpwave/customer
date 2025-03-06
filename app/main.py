@@ -7,6 +7,10 @@ from sqlalchemy.exc import OperationalError
 
 from routers.customer import router as customer_router
 from routers.product import router as product_router
+from routers.customer_product import router as customer_product_router
+from routers.voucher import router as voucher_router
+from routers.contract import router as contract_router
+
 from utils.config import settings
 from utils.database.connection import engine
 
@@ -32,6 +36,9 @@ app = FastAPI(title="helpwave customer", lifespan=lifespan)
 
 app.include_router(customer_router)
 app.include_router(product_router)
+app.include_router(customer_product_router)
+app.include_router(voucher_router)
+app.include_router(contract_router)
 
 origins = ["*" if settings.DEVELOPMENT else settings.EXTERNAL_URL]
 app.add_middleware(

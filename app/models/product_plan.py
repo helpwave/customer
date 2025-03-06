@@ -21,9 +21,9 @@ class ProductPlan(Base):
     type = Column(Enum(PlanTypeEnum), nullable=False)
     cost_euro = Column(Numeric, nullable=False)
     seat_based = Column(Boolean, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime, default=datetime.now, onupdate=datetime.now
     )
 
     product = relationship("Product", back_populates="plans")

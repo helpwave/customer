@@ -1,5 +1,6 @@
 from datetime import datetime
-from uuid import uuid4
+from uuid import uuid4, UUID as UUID4
+from pydantic import BaseModel
 
 from sqlalchemy import Column, DateTime, Enum, String
 from sqlalchemy.dialects.postgresql import UUID
@@ -14,4 +15,13 @@ class Contract(Base):
     uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     key = Column(Enum(ContractKeyEnum), nullable=False)
     version = Column(String, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    url = Column(String, nullable=True)
+    created_at = Column(DateTime, default=datetime.now)
+
+
+class ContractBase(BaseModel):
+    uuid: UUID4
+    key: ContractKeyEnum
+    version: str
+    url: str | None
+    created_at: datetime

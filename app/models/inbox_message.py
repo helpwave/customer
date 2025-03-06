@@ -19,9 +19,9 @@ class InboxMessage(Base):
     subject = Column(String, nullable=False)
     message = Column(Text, nullable=False)
     status = Column(Enum(MessageStatusEnum), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime, default=datetime.now, onupdate=datetime.now
     )
 
     customer = relationship("Customer", back_populates="inbox_messages")
