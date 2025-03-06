@@ -4,47 +4,6 @@ on:
   pull_request:
 
 jobs:
-  detect-diffs:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      
-      - name: Changes in models directories
-        id: model-changes
-        uses: tj-actions/changed-files@v45
-        with:
-          path: "app/services"
-          files: "./*/models/**"
-
-      - name: Model changes output
-        env:
-          CHANGED_MODEL_FILES: ${{ steps.model-changes.outputs.all_changed_files }}
-        run: |
-          for file in "${CHANGED_MODEL_FILES}"; do
-            echo "$file was changed"
-          done
-
-      - name: Changes in migrations
-        id: migration-changes
-        uses: tj-actions/changed-files@v45
-        with:
-          path: "app/alembic/versions"
-          files: "*.py"
-
-      - name: Migration changes output
-        env:
-          CHANGED_MIGRATION_FILES: ${{ steps.migration-changes.outputs.all_changed_files }}
-        run: |
-          for file in ${CHANGED_MIGRATION_FILES}; do
-            echo "$file was changed"
-          done           
-    
-    outputs:
-      changed_migration_files: ${{ steps.migration-changes.outputs.all_changed_files }}
-      changed_model_files: ${{ steps.model-changes.outputs.all_changed_files }}
-
-    
   prevent-changes:
     runs-on: ubuntu-latest
     needs: detect-diffs
