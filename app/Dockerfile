@@ -17,10 +17,9 @@ FROM python:${PY_VERSION}-alpine
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-ENV PORT 80
 
-ENV UVICORN_HOST="0.0.0.0"
-ENV UVICORN_PORT=$PORT
+ENV PORT 80
+ENV HOST "0.0.0.0"
 
 RUN apk update && apk upgrade --no-cache
 
@@ -29,4 +28,4 @@ COPY . /app
 
 WORKDIR /app
 
-CMD alembic upgrade head && uvicorn main:app --proxy-headers 
+CMD alembic upgrade head && uvicorn main:app --proxy-headers --host $HOST --port $PORT

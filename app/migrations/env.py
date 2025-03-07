@@ -17,6 +17,16 @@ if config.config_file_name is not None:
 
 config.set_main_option("sqlalchemy.url", SQLALCHEMY_DATABASE_URL)
 
+import importlib
+from pathlib import Path
+
+folder_path = Path("models")
+
+python_files = [f.stem for f in folder_path.glob("*.py")]
+
+for module in python_files:
+    importlib.import_module(f"{folder_path.name}.{module}")
+
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel

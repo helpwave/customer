@@ -8,8 +8,8 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
 from models.customer_product import CustomerProduct
-from models.inbox_message import InboxMessage
 from models.invoice import Invoice
+from models.message import Message
 from models.user import User
 from utils.database.connection import Base
 
@@ -34,7 +34,7 @@ class Customer(Base):
     users = relationship(User, back_populates="customer")
     products = relationship(CustomerProduct, back_populates="customer")
     invoices = relationship(Invoice, back_populates="customer")
-    inbox_messages = relationship(InboxMessage, back_populates="customer")
+    messages = relationship(Message, back_populates="customer")
 
 
 class CustomerBase(BaseModel):

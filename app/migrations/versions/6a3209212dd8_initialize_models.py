@@ -1,8 +1,8 @@
-"""initial models
+"""initialize models
 
-Revision ID: 0ff98c538e4f
+Revision ID: 6a3209212dd8
 Revises: 
-Create Date: 2025-03-03 14:15:51.441791
+Create Date: 2025-03-07 11:59:40.771413
 
 """
 
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = "0ff98c538e4f"
+revision: str = "6a3209212dd8"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -43,6 +43,7 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.Column("version", sa.String(), nullable=False),
+        sa.Column("url", sa.String(), nullable=True),
         sa.Column("created_at", sa.DateTime(), nullable=True),
         sa.PrimaryKeyConstraint("uuid"),
     )
@@ -52,12 +53,12 @@ def upgrade() -> None:
         sa.Column("name", sa.String(), nullable=False),
         sa.Column("email", sa.String(), nullable=False),
         sa.Column("website_url", sa.String(), nullable=True),
-        sa.Column("address", sa.String(), nullable=True),
-        sa.Column("house_number", sa.String(), nullable=True),
+        sa.Column("address", sa.String(), nullable=False),
+        sa.Column("house_number", sa.String(), nullable=False),
         sa.Column("care_of", sa.String(), nullable=True),
-        sa.Column("postal_code", sa.String(), nullable=True),
-        sa.Column("city", sa.String(), nullable=True),
-        sa.Column("country", sa.String(), nullable=True),
+        sa.Column("postal_code", sa.String(), nullable=False),
+        sa.Column("city", sa.String(), nullable=False),
+        sa.Column("country", sa.String(), nullable=False),
         sa.Column("created_at", sa.DateTime(), nullable=True),
         sa.Column("updated_at", sa.DateTime(), nullable=True),
         sa.PrimaryKeyConstraint("uuid"),
@@ -73,25 +74,6 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("uuid"),
     )
     op.create_table(
-        "inbox_messages",
-        sa.Column("uuid", sa.UUID(), nullable=False),
-        sa.Column("customer_uuid", sa.UUID(), nullable=False),
-        sa.Column("subject", sa.String(), nullable=False),
-        sa.Column("message", sa.Text(), nullable=False),
-        sa.Column(
-            "status",
-            sa.Enum("UNREAD", "READ", "ARCHIVED", name="messagestatusenum"),
-            nullable=False,
-        ),
-        sa.Column("created_at", sa.DateTime(), nullable=True),
-        sa.Column("updated_at", sa.DateTime(), nullable=True),
-        sa.ForeignKeyConstraint(
-            ["customer_uuid"],
-            ["customers.uuid"],
-        ),
-        sa.PrimaryKeyConstraint("uuid"),
-    )
-    op.create_table(
         "invoices",
         sa.Column("uuid", sa.UUID(), nullable=False),
         sa.Column("customer_uuid", sa.UUID(), nullable=False),
@@ -102,6 +84,25 @@ def upgrade() -> None:
         ),
         sa.Column("date", sa.DateTime(), nullable=False),
         sa.Column("total_amount", sa.Numeric(), nullable=False),
+        sa.Column("created_at", sa.DateTime(), nullable=True),
+        sa.Column("updated_at", sa.DateTime(), nullable=True),
+        sa.ForeignKeyConstraint(
+            ["customer_uuid"],
+            ["customers.uuid"],
+        ),
+        sa.PrimaryKeyConstraint("uuid"),
+    )
+    op.create_table(
+        "messages",
+        sa.Column("uuid", sa.UUID(), nullable=False),
+        sa.Column("customer_uuid", sa.UUID(), nullable=False),
+        sa.Column("subject", sa.String(), nullable=False),
+        sa.Column("message", sa.Text(), nullable=False),
+        sa.Column(
+            "status",
+            sa.Enum("UNREAD", "READ", "ARCHIVED", name="messagestatusenum"),
+            nullable=False,
+        ),
         sa.Column("created_at", sa.DateTime(), nullable=True),
         sa.Column("updated_at", sa.DateTime(), nullable=True),
         sa.ForeignKeyConstraint(
@@ -132,7 +133,7 @@ def upgrade() -> None:
     op.create_table(
         "users",
         sa.Column("uuid", sa.UUID(), nullable=False),
-        sa.Column("customer_uuid", sa.UUID(), nullable=False),
+        sa.Column("customer_uuid", sa.UUID(), nullable=True),
         sa.Column("name", sa.String(), nullable=False),
         sa.Column("email", sa.String(), nullable=False),
         sa.Column(
@@ -152,7 +153,7 @@ def upgrade() -> None:
         sa.Column("uuid", sa.UUID(), nullable=False),
         sa.Column("code", sa.String(), nullable=False),
         sa.Column("description", sa.Text(), nullable=True),
-        sa.Column("product_plan_uuid", sa.UUID(), nullable=True),
+        sa.Column("product_plan_uuid", sa.UUID(), nullable=False),
         sa.Column("discount_percentage", sa.Numeric(), nullable=True),
         sa.Column("discount_fixed_amount", sa.Numeric(), nullable=True),
         sa.Column("valid_from", sa.DateTime(), nullable=False),
@@ -179,6 +180,7 @@ def upgrade() -> None:
         sa.Column("end_date", sa.DateTime(), nullable=False),
         sa.Column("next_payment_date", sa.DateTime(), nullable=True),
         sa.Column("voucher_uuid", sa.UUID(), nullable=True),
+        sa.Column("cancellation_date", sa.DateTime(), nullable=True),
         sa.Column("created_at", sa.DateTime(), nullable=True),
         sa.Column("updated_at", sa.DateTime(), nullable=True),
         sa.ForeignKeyConstraint(
@@ -220,8 +222,8 @@ def downgrade() -> None:
     op.drop_table("vouchers")
     op.drop_table("users")
     op.drop_table("product_plans")
+    op.drop_table("messages")
     op.drop_table("invoices")
-    op.drop_table("inbox_messages")
     op.drop_table("products")
     op.drop_table("customers")
     op.drop_table("contracts")

@@ -9,8 +9,8 @@ from models.static import MessageStatusEnum
 from utils.database.connection import Base
 
 
-class InboxMessage(Base):
-    __tablename__ = "inbox_messages"
+class Message(Base):
+    __tablename__ = "messages"
 
     uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     customer_uuid = Column(
@@ -22,4 +22,4 @@ class InboxMessage(Base):
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
-    customer = relationship("Customer", back_populates="inbox_messages")
+    customer = relationship("Customer", back_populates="messages")
