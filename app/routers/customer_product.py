@@ -9,6 +9,7 @@ from models.customer_product import (
     CustomerProductBase,
     CustomerProductCreate,
 )
+from models.invoice import Invoice
 from models.product import Product
 from models.voucher import Voucher
 from utils.database.session import get_database
@@ -55,6 +56,11 @@ async def create(
         end_date=datetime.now() + timedelta(days=30),
     )
 
+    invoice = Invoice(
+        customer_uuid=user.customer.uuid, date=datetime.now(), total_amount=10
+    )
+
+    session.add(invoice)
     session.add(customer_product)
     session.commit()
 

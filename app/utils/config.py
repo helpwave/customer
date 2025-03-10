@@ -29,6 +29,10 @@ class Settings(BaseSettings):
         env="KEYCLOAK_CLIENT_SECRET", default="customer-api-client-secret"
     )
 
+    STRIPE_SECRET_KEY: str = Field(
+        env="STRIPE_SECRET_KEY", default="sk_test_000000000"
+    )
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
