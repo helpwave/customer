@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 
 from models.invoice import Invoice, InvoiceBase
 from models.user import User
-from utils.config import settings
+from utils.config import stripe_return_url
 from utils.database.session import get_database
 from utils.security.token import get_user
 
@@ -35,29 +35,27 @@ async def pay(
         line_items=[
             {
                 "price_data": {
-                    "currency": "usd",
+                    "currency": "eur",
                     "product_data": {
-                        "name": "T-shirt",
+                        "name": str(invoice.uuid),
                     },
-                    "unit_amount": 2000,
+                    "unit_amount": invoice.total_amount,
                 },
                 "quantity": 1,
             }
         ],
         mode="payment",
-        success_url=settings.EXTERNAL_URL
-        + "/invoice/success?session_id={CHECKOUT_SESSION_ID}",
-        cancel_url=settings.EXTERNAL_URL
-        + "/invoice/cancel?session_id={CHECKOUT_SESSION_ID}",
+        ui_mode="embedded",
+        return_url=stripe_return_url,
     )
 
-    return session.url
+    return session.client_secret
 
 
-@router.get("/success")
+@router.get("/status")
 async def get_payment_status(
     session_id: str = Query(..., description="Stripe Session ID")
 ):
     session = stripe.checkout.Session.retrieve(session_id)
-    print(session)
+
     return {"status": session.payment_status, "session": session}

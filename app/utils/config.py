@@ -1,3 +1,5 @@
+import urllib.parse
+
 from keycloak import KeycloakOpenID
 from pydantic import Field
 from pydantic_settings import BaseSettings
@@ -7,7 +9,10 @@ class Settings(BaseSettings):
     DEVELOPMENT: bool = Field(env="DEVELOPMENT", default=False)
     LOG_LEVEL: str = Field(env="LOG_LEVEL", default="INFO")
     EXTERNAL_URL: str = Field(
-        env="EXTERNAL_URL", default="https://api.customer.helpwave.de"
+        env="EXTERNAL_URL", default="https://customer.helpwave.de"
+    )
+    EXTERNAL_RETURN_PATH: str = Field(
+        env="EXTERNAL_RETURN_PATH", default="/payment/return"
     )
 
     DATABASE_HOSTNAME: str = Field(env="DATABASE_HOSTNAME", default="postgres")
@@ -48,5 +53,6 @@ keycloak_openid = KeycloakOpenID(
 )
 
 
-def get_openid_config():
-    return keycloak_openid.well_known()
+stripe_return_url = urllib.parse.urljoin(
+    settings.EXTERNAL_URL, settings.EXTERNAL_RETURN_PATH
+)
