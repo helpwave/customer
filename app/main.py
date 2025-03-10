@@ -1,7 +1,8 @@
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException, Request
+import stripe
+from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from sqlalchemy.exc import OperationalError
@@ -9,12 +10,13 @@ from sqlalchemy.exc import OperationalError
 from routers.contract import router as contract_router
 from routers.customer import router as customer_router
 from routers.customer_product import router as customer_product_router
+from routers.invoice import router as invoice_router
 from routers.product import router as product_router
 from routers.voucher import router as voucher_router
 from utils.config import keycloak_openid, settings
 from utils.database.connection import engine
 from utils.helpers.example import create_example_data
-from utils.security.token import TokenResponse, authenticate_user
+from utils.security.token import authenticate_user
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)-8s %(meenginessage)s",
@@ -34,6 +36,9 @@ async def lifespan(_: FastAPI):
     if settings.DEVELOPMENT:
         create_example_data()
 
+    if settings.STRIPE_SECRET_KEY:
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+
     yield
 
 
@@ -44,6 +49,7 @@ app.include_router(product_router)
 app.include_router(customer_product_router)
 app.include_router(voucher_router)
 app.include_router(contract_router)
+app.include_router(invoice_router)
 
 origins = ["*" if settings.DEVELOPMENT else settings.EXTERNAL_URL]
 app.add_middleware(
@@ -55,7 +61,7 @@ app.add_middleware(
 )
 
 
-@app.get("/callback", response_model=TokenResponse, include_in_schema=False)
+@app.get("/callback", include_in_schema=False)
 async def callback(request: Request):
     keycode = request.query_params.get("code") or ""
 
@@ -67,7 +73,7 @@ async def callback(request: Request):
             detail="Invalid username or password",
         )
 
-    return access_token
+    return Response(content=access_token, media_type="text/plain")
 
 
 @app.get("/login", response_class=RedirectResponse, include_in_schema=False)

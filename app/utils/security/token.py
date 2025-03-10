@@ -3,23 +3,13 @@ from uuid import UUID as UUID4
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from keycloak.exceptions import KeycloakAuthenticationError, KeycloakPostError
-from pydantic import BaseModel, SecretStr
+from pydantic import BaseModel
 
 from models.user import User
 from utils.config import keycloak_openid
 from utils.database.session import get_database
 
 bearer_scheme = HTTPBearer()
-
-
-class TokenRequest(BaseModel):
-    username: str
-    password: SecretStr
-
-
-class TokenResponse(BaseModel):
-    access_token: str
-    token_type: str = "bearer"
 
 
 class UserInfo(BaseModel):
