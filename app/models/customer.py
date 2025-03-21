@@ -10,6 +10,7 @@ from sqlalchemy.orm import relationship
 from models.customer_product import CustomerProduct
 from models.invoice import Invoice
 from models.message import Message
+from models.static import HouseNumber, Mail, PhoneNumber, PostalCode, WebURL
 from models.user import User
 from utils.database.connection import Base
 
@@ -22,6 +23,7 @@ class Customer(Base):
     email = Column(String, unique=True, nullable=False)
 
     website_url = Column(String)
+    phone_number = Column(String)
     address = Column(String, nullable=False)
     house_number = Column(String, nullable=False)
     care_of = Column(String)
@@ -40,12 +42,13 @@ class Customer(Base):
 class CustomerBase(BaseModel):
     uuid: UUID4
     name: str
-    email: str
-    website_url: str | None
+    email: Mail
+    phone_number: str | None = PhoneNumber
+    website_url: str | None = WebURL
     address: str | None
-    house_number: str | None
+    house_number: str | None = HouseNumber
     care_of: str | None
-    postal_code: str | None
+    postal_code: str | None = PostalCode
     city: str | None
     country: str | None
     created_at: datetime
@@ -54,12 +57,13 @@ class CustomerBase(BaseModel):
 
 class CustomerCreate(BaseModel):
     name: str
-    email: str
-    website_url: str | None
+    email: Mail
+    phone_number: str | None = PhoneNumber
+    website_url: str | None = WebURL
     address: str | None
-    house_number: str | None
+    house_number: str | None = HouseNumber
     care_of: str | None
-    postal_code: str | None
+    postal_code: str | None = PostalCode
     city: str | None
     country: str | None
 
@@ -69,13 +73,14 @@ class CustomerRead(BaseModel):
 
 
 class CustomerUpdate(BaseModel):
-    name: str | None
-    email: str | None
-    website_url: str | None
+    name: str
+    email: Mail
+    phone_number: str | None = PhoneNumber
+    website_url: str | None = WebURL
     address: str | None
-    house_number: str | None
+    house_number: str | None = HouseNumber
     care_of: str | None
-    postal_code: str | None
+    postal_code: str | None = PostalCode
     city: str | None
     country: str | None
 

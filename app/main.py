@@ -16,6 +16,7 @@ from routers.voucher import router as voucher_router
 from utils.config import keycloak_openid, settings
 from utils.database.connection import engine
 from utils.helpers.example import create_example_data
+from utils.helpers.health import AppStatus, HealthCheck
 from utils.security.token import authenticate_user
 
 logging.basicConfig(
@@ -24,12 +25,20 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 
+status: AppStatus = AppStatus.BOOT
+
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
+    global status
+
+    status = AppStatus.BOOT
+
     try:
         engine.connect()
     except OperationalError:
+        status = AppStatus.UNHEALTHY
+
         logging.error("Connection to database failed.")
         raise RuntimeError("Shutdown, database connection failed.")
 
@@ -39,7 +48,11 @@ async def lifespan(_: FastAPI):
     if settings.STRIPE_SECRET_KEY:
         stripe.api_key = settings.STRIPE_SECRET_KEY
 
+    status = AppStatus.HEALTHY
+
     yield
+
+    status = AppStatus.SHUTDOWN
 
 
 app = FastAPI(title="helpwave customer", lifespan=lifespan)
@@ -59,6 +72,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.get("/health", response_model=HealthCheck, include_in_schema=False)
+async def health():
+    global status
+
+    return HealthCheck(status=status)
 
 
 @app.get("/callback", include_in_schema=False)
