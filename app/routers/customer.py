@@ -27,6 +27,7 @@ async def create(
         name=data.name,
         email=data.email,
         website_url=data.website_url,
+        phone_number=data.phone_number,
         address=data.address,
         house_number=data.house_number,
         care_of=data.care_of,
@@ -75,6 +76,7 @@ async def update(
     customer.name = data.name
     customer.email = data.email
     customer.website_url = data.website_url
+    customer.phone_number = data.phone_number
     customer.address = data.address
     customer.house_number = data.house_number
     customer.care_of = data.care_of

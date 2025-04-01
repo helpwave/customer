@@ -68,10 +68,6 @@ class CustomerCreate(BaseModel):
     country: str | None
 
 
-class CustomerRead(BaseModel):
-    uuid: UUID4
-
-
 class CustomerUpdate(BaseModel):
     name: str
     email: Mail
@@ -83,7 +79,3 @@ class CustomerUpdate(BaseModel):
     postal_code: str | None = PostalCode
     city: str | None
     country: str | None
-
-
-class CustomerDelete(BaseModel):
-    uuid: UUID4

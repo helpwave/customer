@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 from models.contract import Contract
 from models.product import Product
+from models.product_contract import ProductContract
 from models.product_plan import ProductPlan
 from models.static import ContractKeyEnum, PlanTypeEnum
 from models.voucher import Voucher
@@ -22,15 +23,15 @@ def create_example_data():
 
         plan1 = ProductPlan(
             product_uuid=product.uuid,
-            type=PlanTypeEnum.MONTHLY,
+            type=PlanTypeEnum.RECURRING,
+            recurring_month=1,
             cost_euro=199.99,
-            seat_based=False,
         )
         plan2 = ProductPlan(
             product_uuid=product.uuid,
-            type=PlanTypeEnum.YEARLY,
+            type=PlanTypeEnum.RECURRING,
+            recurring_month=12,
             cost_euro=1999.99,
-            seat_based=False,
         )
 
         session.add(plan1)
@@ -58,5 +59,14 @@ def create_example_data():
             version="b60cf20350af5d0f8c037aac3267c9a2593f99cd",
             url="https://cdn.legal.helpwave.de/main/agb_app_zum_doc.pdf",
         )
+
         session.add(contract)
+        session.commit()
+        session.refresh(contract)
+
+        prodcut_contract = ProductContract(
+            product_uuid=product.uuid, contract_uuid=contract.uuid
+        )
+
+        session.add(prodcut_contract)
         session.commit()
