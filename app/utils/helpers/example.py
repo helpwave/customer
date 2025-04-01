@@ -8,11 +8,15 @@ from models.static import ContractKeyEnum, PlanTypeEnum
 from models.voucher import Voucher
 from utils.database.connection import SessionLocal
 
+import logging
+
 
 def create_example_data():
     session = SessionLocal()
 
     if not session.query(Product).first():
+        logging.info("Initializing app with example data set")
+
         product = Product(
             name="App Zum Doc",
             description="Kommunizieren Sie mit Ihren Patienten!",
