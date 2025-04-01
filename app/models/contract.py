@@ -5,7 +5,9 @@ from uuid import uuid4
 from pydantic import BaseModel
 from sqlalchemy import Column, DateTime, Enum, String
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 
+from models.product_contract import ProductContract
 from models.static import ContractKeyEnum
 from utils.database.connection import Base
 
@@ -19,6 +21,10 @@ class Contract(Base):
     url = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.now)
 
+    product_contracts = relationship(
+        ProductContract, back_populates="contract"
+    )
+
 
 class ContractBase(BaseModel):
     uuid: UUID4
@@ -26,3 +32,7 @@ class ContractBase(BaseModel):
     version: str
     url: str | None
     created_at: datetime
+
+
+class ContractsByProductRead(BaseModel):
+    prodcuts: list[UUID4]

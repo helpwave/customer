@@ -3,7 +3,7 @@ from uuid import UUID as UUID4
 from uuid import uuid4
 
 from pydantic import BaseModel
-from sqlalchemy import Boolean, Column, DateTime, Enum, ForeignKey, Numeric
+from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, Numeric
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
@@ -20,7 +20,7 @@ class ProductPlan(Base):
     )
     type = Column(Enum(PlanTypeEnum), nullable=False)
     cost_euro = Column(Numeric, nullable=False)
-    seat_based = Column(Boolean, nullable=False)
+    recurring_month = Column(Integer, nullable=True)
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
@@ -31,6 +31,6 @@ class ProductPlanBase(BaseModel):
     uuid: UUID4
     type: PlanTypeEnum
     cost_euro: float
-    seat_based: bool
+    recurring_month: int
     created_at: datetime
     updated_at: datetime

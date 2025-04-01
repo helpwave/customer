@@ -1,6 +1,7 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from uuid import UUID
 
+from dateutil.relativedelta import relativedelta
 from fastapi import APIRouter, Depends, HTTPException
 
 from models.customer import User
@@ -9,9 +10,13 @@ from models.customer_product import (
     CustomerProductBase,
     CustomerProductCreate,
 )
+from models.customer_product_contract import CustomerProductContract
 from models.invoice import Invoice
 from models.product import Product
+from models.product_contract import ProductContract
+from models.static import PlanTypeEnum
 from models.voucher import Voucher
+from utils.calculation.pricing import calculate_pricing_in_euro
 from utils.database.session import get_database
 from utils.security.token import get_user
 
@@ -34,8 +39,19 @@ async def create(
     if not product:
         raise HTTPException(404, detail="Product not found.")
 
-    if data.product_plan_uuid not in [plan.uuid for plan in product.plans]:
+    product_plan = None
+
+    for plan in product.plans:
+        if plan.uuid != data.product_plan_uuid:
+            continue
+
+        product_plan = plan
+        break
+
+    if not product_plan:
         raise HTTPException(404, detail="Plan does not exist on that product.")
+
+    voucher = None
 
     if data.voucher_uuid:
         voucher = (
@@ -47,24 +63,48 @@ async def create(
 
         voucher.redeemed_count += 1
 
+    required_contract_uuids = set(
+        session.query(ProductContract.uuid)
+        .filter_by(product_uuid=product.uuid)
+        .all()
+    )
+
+    if not required_contract_uuids.issubset(set(data.accepted_contracts)):
+        raise HTTPException(400, detail="Not all contracts accepted.")
+
     customer_product = CustomerProduct(
         customer_uuid=user.customer_uuid,
         product_uuid=data.product_uuid,
         product_plan_uuid=data.product_plan_uuid,
         voucher_uuid=data.voucher_uuid,
         start_date=datetime.now(),
-        end_date=datetime.now() + timedelta(days=30),
+        end_date=(
+            datetime.now()
+            + relativedelta(months=+product_plan.recurring_month)
+            if product_plan.type == PlanTypeEnum.RECURRING
+            else None
+        ),
     )
 
+    session.add(customer_product)
+    session.commit()
+    session.refresh(customer_product)
+
+    for required_contract_uuid in required_contract_uuids:
+        customer_product_contract = CustomerProductContract(
+            customer_product_uuid=customer_product.uiid,
+            contract_uuid=required_contract_uuid,
+        )
+        session.add(customer_product_contract)
+
     invoice = Invoice(
-        customer_uuid=user.customer.uuid, date=datetime.now(), total_amount=10
+        customer_uuid=user.customer.uuid,
+        date=datetime.now(),
+        total_amount=calculate_pricing_in_euro(product_plan, voucher),
     )
 
     session.add(invoice)
-    session.add(customer_product)
     session.commit()
-
-    session.refresh(customer_product)
 
     return customer_product
 
