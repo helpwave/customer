@@ -48,7 +48,7 @@ HouseNumber = Field(
 WebURL: str = Field(
     ...,
     pattern=r"^https?://[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+(?:\:[0-9]+)?"
-            r"(?:/[^\s]*)?$",
+    r"(?:/[^\s]*)?$",
     description=(
         "A valid web URL, starting with 'http://' or 'https://'. It can "
         "include domain names, optional ports, and paths. Example: "
@@ -69,9 +69,10 @@ class RoleEnum(PyEnum):
 
 
 class PlanTypeEnum(PyEnum):
-    MONTHLY = "monthly"
-    QUARTERLY = "quarterly"
-    YEARLY = "yearly"
+    ONCE = "once"
+    RECURRING = "recurring"
+    LIFETIME = "lifetime"
+    TRIAL = "trial"
 
 
 class InvoiceStatusEnum(PyEnum):

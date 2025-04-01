@@ -76,8 +76,6 @@ app.add_middleware(
 
 @app.get("/health", response_model=HealthCheck, include_in_schema=False)
 async def health():
-    global status
-
     return HealthCheck(status=status)
 
 

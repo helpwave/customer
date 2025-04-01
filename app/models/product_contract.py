@@ -2,17 +2,18 @@ from uuid import uuid4
 
 from sqlalchemy import Column, DateTime, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 
 from utils.database.connection import Base
 
 
-class CustomerProductContract(Base):
-    __tablename__ = "customer_product_contracts"
+class ProductContract(Base):
+    __tablename__ = "product_contracts"
 
     uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    product_customer_uuid = Column(
+    product_uuid = Column(
         UUID(as_uuid=True),
-        ForeignKey("customer_products.uuid"),
+        ForeignKey("products.uuid"),
         nullable=False,
     )
     contract_uuid = Column(
@@ -20,4 +21,5 @@ class CustomerProductContract(Base):
         ForeignKey("contracts.uuid"),
         nullable=False,
     )
+    contract = relationship("Contract", back_populates="product_contracts")
     accepted_at = Column(DateTime, nullable=False)
