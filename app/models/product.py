@@ -7,6 +7,7 @@ from sqlalchemy import Column, DateTime, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
+from models.product_contract import ProductContract
 from models.product_plan import ProductPlan, ProductPlanBase
 from utils.database.connection import Base
 
@@ -21,6 +22,7 @@ class Product(Base):
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     plans = relationship(ProductPlan, back_populates="product")
+    product_contracts = relationship(ProductContract, back_populates="product")
 
 
 class ProductBase(BaseModel):

@@ -35,4 +35,4 @@ class ContractBase(BaseModel):
 
 
 class ContractsByProductRead(BaseModel):
-    prodcuts: list[UUID4]
+    products: list[UUID4]

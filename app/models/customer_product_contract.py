@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import uuid4
 
 from sqlalchemy import Column, DateTime, ForeignKey
@@ -20,4 +21,4 @@ class CustomerProductContract(Base):
         ForeignKey("contracts.uuid"),
         nullable=False,
     )
-    accepted_at = Column(DateTime, nullable=False)
+    accepted_at = Column(DateTime, default=datetime.now, nullable=False)

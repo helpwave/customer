@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-from sqlalchemy import Column, DateTime, ForeignKey
+from sqlalchemy import Column, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
@@ -21,5 +21,6 @@ class ProductContract(Base):
         ForeignKey("contracts.uuid"),
         nullable=False,
     )
+
     contract = relationship("Contract", back_populates="product_contracts")
-    accepted_at = Column(DateTime, nullable=False)
+    product = relationship("Prodcut", back_populates="product_contracts")

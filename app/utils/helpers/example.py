@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timedelta
 
 from models.contract import Contract
@@ -7,8 +8,6 @@ from models.product_plan import ProductPlan
 from models.static import ContractKeyEnum, PlanTypeEnum
 from models.voucher import Voucher
 from utils.database.connection import SessionLocal
-
-import logging
 
 
 def create_example_data():
