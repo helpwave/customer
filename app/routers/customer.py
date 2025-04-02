@@ -47,7 +47,7 @@ async def create(
     return customer
 
 
-@router.get("/check", response_model=bool)
+@router.get("/check/", response_model=bool)
 async def check(user: User = Depends(get_user)):
     return bool(user.customer)
 

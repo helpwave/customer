@@ -126,7 +126,7 @@ async def read(
     return customer_product
 
 
-@router.get("/self", response_model=list[CustomerProductBase])
+@router.get("/self/", response_model=list[CustomerProductBase])
 async def read_all_by_customer(user: User = Depends(get_user)):
     if not user.customer:
         return []
