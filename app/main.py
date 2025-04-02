@@ -20,7 +20,7 @@ from utils.helpers.health import AppStatus, HealthCheck
 from utils.security.token import authenticate_user
 
 logging.basicConfig(
-    format="%(asctime)s %(levelname)-8s %(meenginessage)s",
+    format="%(asctime)s %(levelname)-8s %(message)s",
     level=settings.LOG_LEVEL,
     datefmt="%Y-%m-%d %H:%M:%S",
 )
