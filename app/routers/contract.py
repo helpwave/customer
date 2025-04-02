@@ -19,7 +19,7 @@ async def read(uuid: UUID, session=Depends(get_database)):
     return contract
 
 
-@router.put("/product", response_model=list[ContractBase])
+@router.put("/product/", response_model=list[ContractBase])
 async def read_all_products(
     data: ContractsByProductRead, session=Depends(get_database)
 ):

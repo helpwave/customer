@@ -12,7 +12,7 @@ from utils.security.token import get_user
 router = APIRouter(prefix="/invoice", tags=["Invoice"])
 
 
-@router.get("/self", response_model=list[InvoiceBase])
+@router.get("/self/", response_model=list[InvoiceBase])
 async def read_all(user: User = Depends(get_user)):
     if not user.customer:
         raise HTTPException(404, detail="No customer found.")
@@ -52,7 +52,7 @@ async def pay(
     return session.client_secret
 
 
-@router.get("/status")
+@router.get("/status/")
 async def get_payment_status(
     session_id: str = Query(..., description="Stripe Session ID")
 ):
