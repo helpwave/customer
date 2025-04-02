@@ -11,6 +11,7 @@ class CustomerProductContract(Base):
     __tablename__ = "customer_product_contracts"
 
     uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    # TODO reconsider this naming and make it consistent with others
     product_customer_uuid = Column(
         UUID(as_uuid=True),
         ForeignKey("customer_products.uuid"),
