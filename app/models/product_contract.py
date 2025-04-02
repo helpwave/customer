@@ -23,4 +23,4 @@ class ProductContract(Base):
     )
 
     contract = relationship("Contract", back_populates="product_contracts")
-    product = relationship("Prodcut", back_populates="product_contracts")
+    product = relationship("Product", back_populates="product_contracts")
