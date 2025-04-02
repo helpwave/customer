@@ -64,13 +64,14 @@ async def create(
         voucher.redeemed_count += 1
 
     required_contract_uuids = set(
-        session.query(ProductContract.uuid)
+        row[0] for row in session.query(ProductContract.contract_uuid)
         .filter_by(product_uuid=product.uuid)
         .all()
     )
 
     if not required_contract_uuids.issubset(set(data.accepted_contracts)):
-        raise HTTPException(400, detail="Not all contracts accepted.")
+        missing_contracts = required_contract_uuids - set(data.accepted_contracts)
+        raise HTTPException(400, detail=f"Not all contracts accepted. Missing: {missing_contracts}")
 
     customer_product = CustomerProduct(
         customer_uuid=user.customer_uuid,
@@ -92,7 +93,7 @@ async def create(
 
     for required_contract_uuid in required_contract_uuids:
         customer_product_contract = CustomerProductContract(
-            customer_product_uuid=customer_product.uiid,
+            product_customer_uuid=customer_product.uuid,
             contract_uuid=required_contract_uuid,
         )
         session.add(customer_product_contract)
