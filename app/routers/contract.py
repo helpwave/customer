@@ -25,7 +25,7 @@ async def read_all_products(
 ):
     result = []
 
-    for product_uuid in data.prodcuts:
+    for product_uuid in data.products:
         for product_contract in (
             session.query(ProductContract)
             .filter_by(product_uuid=product_uuid)

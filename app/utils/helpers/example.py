@@ -67,9 +67,9 @@ def create_example_data():
         session.commit()
         session.refresh(contract)
 
-        prodcut_contract = ProductContract(
+        product_contract = ProductContract(
             product_uuid=product.uuid, contract_uuid=contract.uuid
         )
 
-        session.add(prodcut_contract)
+        session.add(product_contract)
         session.commit()
