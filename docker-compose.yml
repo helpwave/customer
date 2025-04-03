@@ -69,8 +69,8 @@ services:
     ports:
       - "8000:80"
     environment:
-      EXTERNAL_URL: "http://localhost:8000"
-      EXTERNAL_RETURN_PATH: "/"
+      EXTERNAL_URL: "http://localhost:3000"
+      EXTERNAL_RETURN_PATH: "/payments/success"
 
       DATABASE_HOSTNAME: "postgres"
       DATABASE_NAME: "postgres"

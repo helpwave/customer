@@ -39,14 +39,14 @@ async def pay(
                     "product_data": {
                         "name": str(invoice.uuid),
                     },
-                    "unit_amount": invoice.total_amount,
+                    "unit_amount": int(invoice.total_amount * 100),
                 },
                 "quantity": 1,
             }
         ],
         mode="payment",
         ui_mode="embedded",
-        return_url=stripe_return_url,
+        return_url=stripe_return_url+ "?session_id={CHECKOUT_SESSION_ID}",
     )
 
     return session.client_secret
