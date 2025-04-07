@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException
-
 from models.customer import (
     Customer,
     CustomerBase,

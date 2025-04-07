@@ -2,7 +2,6 @@ from uuid import UUID
 
 import stripe
 from fastapi import APIRouter, Depends, HTTPException, Query
-
 from models.invoice import Invoice, InvoiceBase
 from models.user import User
 from utils.config import stripe_return_url
@@ -39,14 +38,14 @@ async def pay(
                     "product_data": {
                         "name": str(invoice.uuid),
                     },
-                    "unit_amount": invoice.total_amount,
+                    "unit_amount": int(invoice.total_amount * 100),
                 },
                 "quantity": 1,
             }
         ],
         mode="payment",
         ui_mode="embedded",
-        return_url=stripe_return_url,
+        return_url=stripe_return_url + "?session_id={CHECKOUT_SESSION_ID}",
     )
 
     return session.client_secret
