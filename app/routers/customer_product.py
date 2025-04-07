@@ -63,7 +63,7 @@ async def create(
         voucher.redeemed_count += 1
 
     required_contract_uuids = set(
-        session.query(ProductContract.contract_uuid)
+        row[0] for row in session.query(ProductContract.contract_uuid)
         .filter_by(product_uuid=product.uuid)
         .all()
     )
