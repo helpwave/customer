@@ -3,7 +3,6 @@ from uuid import UUID
 
 from dateutil.relativedelta import relativedelta
 from fastapi import APIRouter, Depends, HTTPException
-
 from models.customer import User
 from models.customer_product import (
     CustomerProduct,

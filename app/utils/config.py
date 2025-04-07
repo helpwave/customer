@@ -12,7 +12,7 @@ class Settings(BaseSettings):
         env="EXTERNAL_URL", default="https://customer.helpwave.de"
     )
     EXTERNAL_RETURN_PATH: str = Field(
-        env="EXTERNAL_RETURN_PATH", default="/payment/return"
+        env="EXTERNAL_RETURN_PATH", default="/payment/success"
     )
 
     DATABASE_HOSTNAME: str = Field(env="DATABASE_HOSTNAME", default="postgres")
