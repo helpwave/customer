@@ -2,7 +2,6 @@ from uuid import UUID
 
 import stripe
 from fastapi import APIRouter, Depends, HTTPException, Query
-
 from models.invoice import Invoice, InvoiceBase
 from models.user import User
 from utils.config import stripe_return_url

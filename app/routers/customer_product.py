@@ -3,7 +3,6 @@ from uuid import UUID
 
 from dateutil.relativedelta import relativedelta
 from fastapi import APIRouter, Depends, HTTPException
-
 from models.customer import User
 from models.customer_product import (
     CustomerProduct,
@@ -64,14 +63,18 @@ async def create(
         voucher.redeemed_count += 1
 
     required_contract_uuids = set(
-        row[0] for row in session.query(ProductContract.contract_uuid)
+        session.query(ProductContract.contract_uuid)
         .filter_by(product_uuid=product.uuid)
         .all()
     )
+    accepted_contracts = set(data.accepted_contracts)
 
-    if not required_contract_uuids.issubset(set(data.accepted_contracts)):
-        missing_contracts = required_contract_uuids - set(data.accepted_contracts)
-        raise HTTPException(400, detail=f"Not all contracts accepted. Missing: {missing_contracts}")
+    if not required_contract_uuids.issubset(accepted_contracts):
+        missing_contracts = required_contract_uuids - set(accepted_contracts)
+        raise HTTPException(
+            400,
+            detail=f"Not all contracts accepted. Missing: {missing_contracts}",
+        )
 
     customer_product = CustomerProduct(
         customer_uuid=user.customer_uuid,
