@@ -38,7 +38,7 @@ async def pay(
                 "price_data": {
                     "currency": "eur",
                     "product_data": {
-                        "name": invoice.name or str(invoice.uuid),
+                        "name": invoice.title or str(invoice.uuid),
                         "description": invoice.customer_product.product.description,
                         "images": [
                             invoice.customer_product.product.image_url
@@ -86,7 +86,7 @@ async def subscribe(
                 "price_data": {
                     "currency": "eur",
                     "product_data": {
-                        "name": invoice.name or str(invoice.uuid),
+                        "name": invoice.title or str(invoice.uuid),
                         "description": invoice.customer_product.product.description,
                         "images": [
                             invoice.customer_product.product.image_url
