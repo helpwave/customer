@@ -4,6 +4,7 @@ from uuid import uuid4
 
 from pydantic import BaseModel
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, Numeric, String, Text
+from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 from utils.database.connection import Base
 
@@ -25,6 +26,8 @@ class Voucher(Base):
     redeemed_count = Column(Integer, default=0)
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
+
+    product_plan = relationship("ProductPlan", back_populates="vouchers")
 
     @property
     def valid(self) -> bool:

@@ -76,3 +76,15 @@ class CustomerProductCreate(BaseModel):
     product_plan_uuid: UUID4
     voucher_uuid: UUID4 | None = None
     accepted_contracts: list[UUID4] = []
+
+
+class CustomerProductCalculationRequest(BaseModel):
+    product_uuid: UUID4
+    product_plan_uuid: UUID4
+    voucher_uuid: UUID4 | None = None
+
+
+class CustomerProductCalculation(BaseModel):
+    final_price: float
+    before_price: float
+    saving: float

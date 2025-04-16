@@ -29,6 +29,10 @@ class ProductPlan(Base):
         "CustomerProduct",
         back_populates="product_plan")
 
+    vouchers = relationship(
+        "Voucher",
+        back_populates="product_plan")
+
 
 class ProductPlanBase(BaseModel):
     uuid: UUID4

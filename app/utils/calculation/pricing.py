@@ -4,11 +4,17 @@ from models.voucher import Voucher
 
 def calculate_pricing_in_euro(
     product_plan: ProductPlan, /, voucher: Voucher | None = None
-) -> int:
-    cost = product_plan.cost_euro
+) -> float:
+    return calculate_full_pricing_in_euro(product_plan, voucher)[0]
+
+
+def calculate_full_pricing_in_euro(
+    product_plan: ProductPlan, /, voucher: Voucher | None = None
+) -> tuple[float, float]:
+    cost = float(product_plan.cost_euro)
 
     if not voucher:
-        return cost
+        return (cost, cost)
 
     assert product_plan.uuid == voucher.product_plan_uuid
 
@@ -18,4 +24,4 @@ def calculate_pricing_in_euro(
     if voucher.discount_fixed_amount:
         cost -= voucher.discount_fixed_amount
 
-    return cost
+    return (cost, product_plan.cost)

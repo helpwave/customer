@@ -8,15 +8,18 @@ from models.customer_product import (
     CustomerProduct,
     CustomerProductBase,
     CustomerProductCreate,
+    CustomerProductCalculation,
+    CustomerProductCalculationRequest,
     ExtendedCustomerProductBase,
 )
 from models.customer_product_contract import CustomerProductContract
 from models.invoice import Invoice
 from models.product import Product
+from models.product_plan import ProductPlan
 from models.product_contract import ProductContract
 from models.static import PlanTypeEnum
 from models.voucher import Voucher
-from utils.calculation.pricing import calculate_pricing_in_euro
+from utils.calculation.pricing import calculate_pricing_in_euro, calculate_full_pricing_in_euro
 from utils.database.session import get_database
 from utils.security.token import get_user
 
@@ -61,7 +64,7 @@ async def create(
         voucher = session.query(Voucher).filter_by(
             uuid=data.voucher_uuid).first()
 
-        if not voucher or not voucher.valid:
+        if not voucher or not voucher.valid or voucher.product_plan != product_plan.uuid:
             raise HTTPException(404, detail="Voucher not valid.")
 
         voucher.redeemed_count += 1
@@ -142,6 +145,37 @@ async def read_all_by_customer(user: User = Depends(get_user)):
         return []
 
     return user.customer.products
+
+
+@router.post("/calculate/", response_model=CustomerProductCalculation)
+async def calculate(data: CustomerProductCalculationRequest,
+                    session=Depends(get_database)):
+    product = session.query(Product).filter_by(uuid=data.product_uuid).first()
+
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found.")
+
+    product_plan = session.query(ProductPlan).filter_by(
+        uuid=data.product_plan_uuid).first()
+
+    if not product_plan or product_plan.product.uuid != product.uuid:
+        raise HTTPException(404, detail="Plan does not exist on that product.")
+
+    voucher = None
+
+    if data.voucher_uuid:
+        voucher = session.query(Voucher).filter_by(
+            uuid=data.voucher_uuid).first()
+
+        if not voucher or not voucher.valid or voucher.product_plan != product_plan.uuid:
+            raise HTTPException(404, detail="Voucher not valid.")
+
+    final_price, before_price = calculate_full_pricing_in_euro(
+        product_plan, voucher)
+    saving = before_price - final_price
+
+    return {"final_price": final_price,
+            "before_price": before_price, "saving": saving}
 
 
 @router.delete("/{uuid}")
