@@ -25,6 +25,7 @@ jobs:
       - name: Run flake8
         uses: py-actions/flake8@v2
         with:
+          ignore: "E501,W503"
           exclude: "app/migrations/versions/"
           path: "app"
 

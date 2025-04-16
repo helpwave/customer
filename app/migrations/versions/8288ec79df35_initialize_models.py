@@ -134,8 +134,11 @@ def upgrade() -> None:
         sa.Column(
             "type",
             sa.Enum(
-                "ONCE", "RECURRING", "LIFETIME", "TRIAL", name="plantypeenum"
-            ),
+                "ONCE",
+                "RECURRING",
+                "LIFETIME",
+                "TRIAL",
+                name="plantypeenum"),
             nullable=False,
         ),
         sa.Column("cost_euro", sa.Numeric(), nullable=False),
@@ -155,8 +158,12 @@ def upgrade() -> None:
         sa.Column("name", sa.String(), nullable=False),
         sa.Column("email", sa.String(), nullable=False),
         sa.Column(
-            "role", sa.Enum("ADMIN", "NORMAL", name="roleenum"), nullable=False
-        ),
+            "role",
+            sa.Enum(
+                "ADMIN",
+                "NORMAL",
+                name="roleenum"),
+            nullable=False),
         sa.Column("created_at", sa.DateTime(), nullable=True),
         sa.Column("updated_at", sa.DateTime(), nullable=True),
         sa.ForeignKeyConstraint(

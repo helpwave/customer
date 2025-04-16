@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from models.static import InvoiceStatusEnum
 from pydantic import BaseModel
-from sqlalchemy import Column, DateTime, Enum, ForeignKey, Numeric
+from sqlalchemy import Column, DateTime, Enum, ForeignKey, Numeric, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from utils.database.connection import Base
@@ -17,6 +17,12 @@ class Invoice(Base):
     customer_uuid = Column(
         UUID(as_uuid=True), ForeignKey("customers.uuid"), nullable=False
     )
+    customer_product_uuid = Column(
+        UUID(as_uuid=True),
+        ForeignKey("customer_products.uuid"),
+        nullable=False,
+    )
+    title = Column(String, nullable=True)
     status = Column(
         Enum(InvoiceStatusEnum),
         nullable=False,
@@ -28,10 +34,14 @@ class Invoice(Base):
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     customer = relationship("Customer", back_populates="invoices")
+    customer_product = relationship(
+        "CustomerProduct",
+        back_populates="invoices")
 
 
 class InvoiceBase(BaseModel):
     uuid: UUID4
+    title: str | None
     status: InvoiceStatusEnum
     date: datetime
     total_amount: float

@@ -8,6 +8,7 @@ from models.customer_product import (
     CustomerProduct,
     CustomerProductBase,
     CustomerProductCreate,
+    ExtendedCustomerProductBase,
 )
 from models.customer_product_contract import CustomerProductContract
 from models.invoice import Invoice
@@ -38,6 +39,10 @@ async def create(
     if not product:
         raise HTTPException(404, detail="Product not found.")
 
+    if session.query(CustomerProduct.uuid).filter_by(
+            product_uuid=product.uuid).first():
+        raise HTTPException(400, detail="Product already booked.")
+
     product_plan = None
 
     for plan in product.plans:
@@ -53,9 +58,8 @@ async def create(
     voucher = None
 
     if data.voucher_uuid:
-        voucher = (
-            session.query(Voucher).filter_by(uuid=data.voucher_uuid).first()
-        )
+        voucher = session.query(Voucher).filter_by(
+            uuid=data.voucher_uuid).first()
 
         if not voucher or not voucher.valid:
             raise HTTPException(404, detail="Voucher not valid.")
@@ -63,7 +67,8 @@ async def create(
         voucher.redeemed_count += 1
 
     required_contract_uuids = set(
-        row[0] for row in session.query(ProductContract.contract_uuid)
+        row[0]
+        for row in session.query(ProductContract.contract_uuid)
         .filter_by(product_uuid=product.uuid)
         .all()
     )
@@ -73,7 +78,11 @@ async def create(
         missing_contracts = required_contract_uuids - set(accepted_contracts)
         raise HTTPException(
             400,
-            detail=f"Not all contracts accepted. Missing: {missing_contracts}",
+            detail=f"Not all contracts accepted. Missing: {
+                ", ".join(
+                    map(
+                        str,
+                        missing_contracts))}",
         )
 
     customer_product = CustomerProduct(
@@ -83,8 +92,7 @@ async def create(
         voucher_uuid=data.voucher_uuid,
         start_date=datetime.now(),
         end_date=(
-            datetime.now()
-            + relativedelta(months=+product_plan.recurring_month)
+            datetime.now() + relativedelta(months=+product_plan.recurring_month)
             if product_plan.type == PlanTypeEnum.RECURRING
             else None
         ),
@@ -103,6 +111,8 @@ async def create(
 
     invoice = Invoice(
         customer_uuid=user.customer.uuid,
+        customer_product=customer_product.uuid,
+        title=f"{product.name} ({product_plan.name})",
         date=datetime.now(),
         total_amount=calculate_pricing_in_euro(product_plan, voucher),
     )
@@ -117,20 +127,16 @@ async def create(
 async def read(
     uuid: UUID, user: User = Depends(get_user), session=Depends(get_database)
 ):
-    customer_product = (
-        session.query(CustomerProduct).filter_by(uuid=uuid).first()
-    )
+    customer_product = session.query(
+        CustomerProduct).filter_by(uuid=uuid).first()
 
-    if (
-        not customer_product
-        or customer_product.customer_uuid != user.customer_uuid
-    ):
+    if not customer_product or customer_product.customer_uuid != user.customer_uuid:
         raise HTTPException(status_code=404, detail="Product not found.")
 
     return customer_product
 
 
-@router.get("/self/", response_model=list[CustomerProductBase])
+@router.get("/self/", response_model=list[ExtendedCustomerProductBase])
 async def read_all_by_customer(user: User = Depends(get_user)):
     if not user.customer:
         return []
@@ -142,14 +148,10 @@ async def read_all_by_customer(user: User = Depends(get_user)):
 async def delete(
     uuid: UUID, user: User = Depends(get_user), session=Depends(get_database)
 ):
-    customer_product = (
-        session.query(CustomerProduct).filter_by(uuid=uuid).first()
-    )
+    customer_product = session.query(
+        CustomerProduct).filter_by(uuid=uuid).first()
 
-    if (
-        not customer_product
-        or customer_product.customer_uuid != user.customer_uuid
-    ):
+    if not customer_product or customer_product.customer_uuid != user.customer_uuid:
         raise HTTPException(status_code=404, detail="Product not found.")
 
     customer_product.cancellation_date = datetime.now()

@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from models.static import PlanTypeEnum
 from pydantic import BaseModel
-from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, Numeric
+from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, Numeric, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from utils.database.connection import Base
@@ -18,17 +18,22 @@ class ProductPlan(Base):
         UUID(as_uuid=True), ForeignKey("products.uuid"), nullable=False
     )
     type = Column(Enum(PlanTypeEnum), nullable=False)
+    name = Column(String, nullable=False)
     cost_euro = Column(Numeric, nullable=False)
     recurring_month = Column(Integer, nullable=True)
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     product = relationship("Product", back_populates="plans")
+    customer_products = relationship(
+        "CustomerProduct",
+        back_populates="product_plan")
 
 
 class ProductPlanBase(BaseModel):
     uuid: UUID4
     type: PlanTypeEnum
+    name: str
     cost_euro: float
     recurring_month: int
     created_at: datetime

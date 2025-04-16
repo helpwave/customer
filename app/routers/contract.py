@@ -26,9 +26,8 @@ async def read_all_products(
 
     for product_uuid in data.products:
         for product_contract in (
-            session.query(ProductContract)
-            .filter_by(product_uuid=product_uuid)
-            .all()
+            session.query(ProductContract).filter_by(
+                product_uuid=product_uuid).all()
         ):
             result.append(product_contract.contract)
 

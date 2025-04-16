@@ -65,8 +65,9 @@ def get_user(
 
     if not user:
         user = User(
-            uuid=user_info.uuid, name=user_info.fullname, email=user_info.email
-        )
+            uuid=user_info.uuid,
+            name=user_info.fullname,
+            email=user_info.email)
 
         session.add(user)
         session.commit()

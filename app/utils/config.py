@@ -12,8 +12,8 @@ class Settings(BaseSettings):
         env="EXTERNAL_URL", default="https://customer.helpwave.de"
     )
     EXTERNAL_RETURN_PATH: str = Field(
-        env="EXTERNAL_RETURN_PATH", default="/payment/success"
-    )
+        env="EXTERNAL_RETURN_PATH",
+        default="/invoices")
 
     DATABASE_HOSTNAME: str = Field(env="DATABASE_HOSTNAME", default="postgres")
     DATABASE_NAME: str = Field(env="DATABASE_NAME", default="customer")
@@ -25,8 +25,8 @@ class Settings(BaseSettings):
         env="KEYCLOAK_SERVER_URL", default="https://id.helpwave.de"
     )
     KEYCLOAK_REALM: str = Field(
-        env="KEYCLOAK_REALM", default="customer-api-realm"
-    )
+        env="KEYCLOAK_REALM",
+        default="customer-api-realm")
     KEYCLOAK_CLIENT_ID: str = Field(
         env="KEYCLOAK_CLIENT_ID", default="customer-api-keycloak"
     )
@@ -35,7 +35,11 @@ class Settings(BaseSettings):
     )
 
     STRIPE_SECRET_KEY: str = Field(
-        env="STRIPE_SECRET_KEY", default="sk_test_000000000"
+        env="STRIPE_SECRET_KEY",
+        default="sk_test_000000000")
+    STRIPE_WEBHOOK_SECRET: str = Field(
+        env="STRIPE_SECRET_KEY",
+        default="whsec_1234567890abcdef1234567890abcdef",
     )
 
     class Config:

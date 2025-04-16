@@ -19,6 +19,7 @@ def create_example_data():
         product = Product(
             name="App Zum Doc",
             description="Kommunizieren Sie mit Ihren Patienten!",
+            image_url="https://app-zum-doc.de/images/appzumdoc_20222.png",
         )
         session.add(product)
         session.commit()
@@ -26,12 +27,14 @@ def create_example_data():
 
         plan1 = ProductPlan(
             product_uuid=product.uuid,
+            name="monatlich",
             type=PlanTypeEnum.RECURRING,
             recurring_month=1,
             cost_euro=199.99,
         )
         plan2 = ProductPlan(
             product_uuid=product.uuid,
+            name="jährlich",
             type=PlanTypeEnum.RECURRING,
             recurring_month=12,
             cost_euro=1999.99,

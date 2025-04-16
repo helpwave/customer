@@ -3,15 +3,7 @@ from uuid import UUID as UUID4
 from uuid import uuid4
 
 from pydantic import BaseModel
-from sqlalchemy import (
-    Column,
-    DateTime,
-    ForeignKey,
-    Integer,
-    Numeric,
-    String,
-    Text,
-)
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, Numeric, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from utils.database.connection import Base
 

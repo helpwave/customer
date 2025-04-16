@@ -36,7 +36,7 @@ PhoneNumber = Field(
 
 HouseNumber = Field(
     ...,
-    pattern=r"^[0-9]{1,6}([A-Za-z]|\-[0-9]{1,3}|\/[0-9]{1,3})?$",
+    pattern=r"^[0-9]{1,6}[A-Za-z]*([\-\/][A-Za-z0-9]{1,10})?$",
     description=(
         "A house number, which can be a number between 1 and 6 digits long. "
         "It may include letters, hyphenated numbers, or fraction-like formats "
@@ -47,8 +47,7 @@ HouseNumber = Field(
 
 WebURL: str = Field(
     ...,
-    pattern=r"^https?://[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+(?:\:[0-9]+)?"
-    r"(?:/[^\s]*)?$",
+    pattern=r"^https?://(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(?::\d+)?" r"(?:/[^\s]*)?$",
     description=(
         "A valid web URL, starting with 'http://' or 'https://'. It can "
         "include domain names, optional ports, and paths. Example: "

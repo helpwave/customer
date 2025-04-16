@@ -16,6 +16,7 @@ from utils.config import keycloak_openid, settings
 from utils.database.connection import engine
 from utils.helpers.example import create_example_data
 from utils.helpers.health import AppStatus, HealthCheck
+from utils.helpers.payment import find_or_create_vat
 from utils.security.token import authenticate_user
 
 logging.basicConfig(
@@ -46,6 +47,10 @@ async def lifespan(_: FastAPI):
 
     if settings.STRIPE_SECRET_KEY:
         stripe.api_key = settings.STRIPE_SECRET_KEY
+
+        find_or_create_vat()
+    else:
+        logging.error("No stripe integration setuped - please fix!")
 
     status = AppStatus.HEALTHY
 

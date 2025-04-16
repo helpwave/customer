@@ -1,4 +1,6 @@
 # flake8: noqa
+from pathlib import Path
+import importlib
 from logging.config import fileConfig
 
 from alembic import context
@@ -16,8 +18,6 @@ if config.config_file_name is not None:
 
 config.set_main_option("sqlalchemy.url", SQLALCHEMY_DATABASE_URL)
 
-import importlib
-from pathlib import Path
 
 folder_path = Path("models")
 
@@ -77,8 +77,8 @@ def run_migrations_online() -> None:
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+            connection=connection,
+            target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

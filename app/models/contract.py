@@ -21,8 +21,7 @@ class Contract(Base):
     created_at = Column(DateTime, default=datetime.now)
 
     product_contracts = relationship(
-        ProductContract, back_populates="contract"
-    )
+        ProductContract, back_populates="contract")
 
 
 class ContractBase(BaseModel):
