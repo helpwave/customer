@@ -89,7 +89,7 @@ async def create(
         )
 
     customer_product = CustomerProduct(
-        customer_uuid=user.customer_uuid,
+        customer_uuid=user.customer.uuid,
         product_uuid=data.product_uuid,
         product_plan_uuid=data.product_plan_uuid,
         voucher_uuid=data.voucher_uuid,
@@ -114,7 +114,7 @@ async def create(
 
     invoice = Invoice(
         customer_uuid=user.customer.uuid,
-        customer_product=customer_product.uuid,
+        customer_product_uuid=customer_product.uuid,
         title=f"{product.name} ({product_plan.name})",
         date=datetime.now(),
         total_amount=calculate_pricing_in_euro(product_plan, voucher),
