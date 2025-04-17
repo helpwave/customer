@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from models.customer import Customer, CustomerBase, CustomerCreate, CustomerUpdate, User
+from models.customer import Customer, CustomerBase, CustomerUpdate, User
 from models.static import RoleEnum
 from utils.database.session import get_database
 from utils.security.token import get_user
@@ -9,7 +9,7 @@ router = APIRouter(prefix="/customer", tags=["Customer"])
 
 @router.post("/", response_model=CustomerBase)
 async def create(
-    data: CustomerCreate,
+    data: CustomerUpdate,
     user: User = Depends(get_user),
     session=Depends(get_database),
 ):
