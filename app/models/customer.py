@@ -41,30 +41,17 @@ class Customer(Base):
 class CustomerBase(BaseModel):
     uuid: UUID4
     name: str
-    email: Mail
     phone_number: str | None = PhoneNumber
     website_url: str | None = WebURL
-    address: str | None
-    house_number: str | None = HouseNumber
+    address: str
+    house_number: str = HouseNumber
     care_of: str | None
-    postal_code: str | None = PostalCode
-    city: str | None
-    country: str | None
+    postal_code: str = PostalCode
+    city: str
+    country: str
+    email: Mail
     created_at: datetime
     updated_at: datetime
-
-
-class CustomerCreate(BaseModel):
-    name: str
-    email: Mail
-    phone_number: str | None = PhoneNumber
-    website_url: str | None = WebURL
-    address: str | None
-    house_number: str | None = HouseNumber
-    care_of: str | None
-    postal_code: str | None = PostalCode
-    city: str | None
-    country: str | None
 
 
 class CustomerUpdate(BaseModel):
@@ -72,9 +59,9 @@ class CustomerUpdate(BaseModel):
     email: Mail
     phone_number: str | None = PhoneNumber
     website_url: str | None = WebURL
-    address: str | None
-    house_number: str | None = HouseNumber
+    address: str
+    house_number: str = HouseNumber
     care_of: str | None
-    postal_code: str | None = PostalCode
-    city: str | None
-    country: str | None
+    postal_code: str = PostalCode
+    city: str
+    country: str
