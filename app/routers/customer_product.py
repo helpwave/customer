@@ -7,19 +7,22 @@ from models.customer import User
 from models.customer_product import (
     CustomerProduct,
     CustomerProductBase,
-    CustomerProductCreate,
     CustomerProductCalculation,
     CustomerProductCalculationRequest,
+    CustomerProductCreate,
     ExtendedCustomerProductBase,
 )
 from models.customer_product_contract import CustomerProductContract
 from models.invoice import Invoice
 from models.product import Product
-from models.product_plan import ProductPlan
 from models.product_contract import ProductContract
+from models.product_plan import ProductPlan
 from models.static import PlanTypeEnum
 from models.voucher import Voucher
-from utils.calculation.pricing import calculate_pricing_in_euro, calculate_full_pricing_in_euro
+from utils.calculation.pricing import (
+    calculate_full_pricing_in_euro,
+    calculate_pricing_in_euro,
+)
 from utils.database.session import get_database
 from utils.security.token import get_user
 

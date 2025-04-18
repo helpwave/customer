@@ -47,12 +47,12 @@ HouseNumber = Field(
 
 WebURL: str = Field(
     ...,
-    pattern=r"^https?://(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(?::\d+)?" r"(?:/[^\s]*)?$",
+    pattern=r"^https?://(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(?::\d+)?"
+    r"(?:/[^\s]*)?$",
     description=(
         "A valid web URL, starting with 'http://' or 'https://'. It can "
         "include domain names, optional ports, and paths. Example: "
-        "'https://www.example.com' or 'http://example.com:8080/path'."
-    ),
+        "'https://www.example.com' or 'http://example.com:8080/path'."),
     examples=[
         "https://www.helpwave.de",
         "https://www.example.com",
