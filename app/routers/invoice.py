@@ -2,7 +2,7 @@ from uuid import UUID
 
 import stripe
 from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request
-from models.invoice import Invoice, InvoiceBase, InvoiceStatusEnum
+from models.invoice import Invoice, InvoiceBase, InvoicePayRequest, InvoiceStatusEnum
 from models.user import User
 from utils.config import settings, stripe_return_url
 from utils.database.session import get_database
@@ -22,8 +22,10 @@ async def read_all(user: User = Depends(get_user)):
 
 @router.post("/pay/{uuid}", response_model=str)
 async def pay(
-    uuid: UUID, user: User = Depends(get_user), session=Depends(get_database)
-):
+        uuid: UUID,
+        data: InvoicePayRequest,
+        user: User = Depends(get_user),
+        session=Depends(get_database)):
     invoice = session.query(Invoice).filter_by(uuid=uuid).first()
 
     if not invoice or invoice.customer_uuid != user.customer_uuid:
@@ -61,6 +63,7 @@ async def pay(
         ],
         customer_email=invoice.customer.email,
         mode="payment",
+        locale=data.locale,
         ui_mode="embedded",
         return_url=stripe_return_url,
     )
@@ -70,8 +73,9 @@ async def pay(
 
 @router.post("/subscribe/{uuid}", response_model=str)
 async def subscribe(
-    uuid: UUID, user: User = Depends(get_user), session=Depends(get_database)
-):
+        uuid: UUID,
+        data: InvoicePayRequest,
+        user: User = Depends(get_user), session=Depends(get_database)):
     invoice = session.query(Invoice).filter_by(uuid=uuid).first()
 
     if not invoice or invoice.customer_uuid != user.customer_uuid:
@@ -112,6 +116,7 @@ async def subscribe(
             }
         ],
         mode="subscription",
+        locale=data.locale,
         ui_mode="embedded",
         return_url=stripe_return_url,
     )

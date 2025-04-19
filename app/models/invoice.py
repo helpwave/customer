@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Literal
 from uuid import UUID as UUID4
 from uuid import uuid4
 
@@ -47,3 +48,7 @@ class InvoiceBase(BaseModel):
     total_amount: float
     created_at: datetime
     updated_at: datetime
+
+
+class InvoicePayRequest(BaseModel):
+    locale: Literal["de", "en"] = "de"
