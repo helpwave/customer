@@ -2,12 +2,13 @@ from datetime import datetime
 from uuid import UUID as UUID4
 from uuid import uuid4
 
-from models.product import ProductBase
-from models.product_plan import ProductPlanBase
 from pydantic import BaseModel
 from sqlalchemy import Column, DateTime, ForeignKey, Integer
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
+
+from models.product import ProductBase
+from models.product_plan import ProductPlanBase
 from utils.database.connection import Base
 
 
@@ -88,3 +89,13 @@ class CustomerProductCalculation(BaseModel):
     final_price: float
     before_price: float
     saving: float
+
+
+class ProductCalculationResult(BaseModel):
+    product_uuid: UUID4
+    calculation: CustomerProductCalculation
+
+
+class CustomerProductsCalculation(BaseModel):
+    overall: CustomerProductCalculation
+    products: list[ProductCalculationResult]

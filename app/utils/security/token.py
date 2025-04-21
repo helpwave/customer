@@ -3,8 +3,9 @@ from uuid import UUID as UUID4
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from keycloak.exceptions import KeycloakAuthenticationError, KeycloakPostError
-from models.user import User
 from pydantic import BaseModel
+
+from models.user import User
 from utils.config import keycloak_openid
 from utils.database.session import get_database
 

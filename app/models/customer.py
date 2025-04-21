@@ -2,15 +2,16 @@ from datetime import datetime
 from uuid import UUID as UUID4
 from uuid import uuid4
 
+from pydantic import BaseModel
+from sqlalchemy import Column, DateTime, String
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
+
 from models.customer_product import CustomerProduct
 from models.invoice import Invoice
 from models.message import Message
 from models.static import HouseNumber, Mail, PhoneNumber, PostalCode, WebURL
 from models.user import User
-from pydantic import BaseModel
-from sqlalchemy import Column, DateTime, String
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
 from utils.database.connection import Base
 
 

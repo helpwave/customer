@@ -1,6 +1,7 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
+
 from models.customer_product import CustomerProduct
 from models.product import Product, ProductBase
 from models.user import User
