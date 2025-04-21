@@ -5,13 +5,14 @@ import stripe
 from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
+from sqlalchemy.exc import OperationalError
+
 from routers.contract import router as contract_router
 from routers.customer import router as customer_router
 from routers.customer_product import router as customer_product_router
 from routers.invoice import router as invoice_router
 from routers.product import router as product_router
 from routers.voucher import router as voucher_router
-from sqlalchemy.exc import OperationalError
 from utils.config import keycloak_openid, settings
 from utils.database.connection import engine
 from utils.helpers.example import create_example_data

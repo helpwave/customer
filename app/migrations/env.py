@@ -5,6 +5,7 @@ from pathlib import Path
 
 from alembic import context
 from sqlalchemy import engine_from_config, pool
+
 from utils.database.connection import SQLALCHEMY_DATABASE_URL, Base
 
 # this is the Alembic Config object, which provides

@@ -2,11 +2,12 @@ from datetime import datetime
 from uuid import UUID as UUID4
 from uuid import uuid4
 
-from models.static import PlanTypeEnum
 from pydantic import BaseModel
 from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, Numeric, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
+
+from models.static import PlanTypeEnum
 from utils.database.connection import Base
 
 

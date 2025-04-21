@@ -2,7 +2,8 @@ from datetime import datetime
 from uuid import UUID
 
 from dateutil.relativedelta import relativedelta
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Body, Depends, HTTPException
+
 from models.customer import User
 from models.customer_product import (
     CustomerProduct,
@@ -10,7 +11,9 @@ from models.customer_product import (
     CustomerProductCalculation,
     CustomerProductCalculationRequest,
     CustomerProductCreate,
+    CustomerProductsCalculation,
     ExtendedCustomerProductBase,
+    ProductCalculationResult,
 )
 from models.customer_product_contract import CustomerProductContract
 from models.invoice import Invoice
@@ -150,35 +153,72 @@ async def read_all_by_customer(user: User = Depends(get_user)):
     return user.customer.products
 
 
-@router.post("/calculate/", response_model=CustomerProductCalculation)
-async def calculate(data: CustomerProductCalculationRequest,
-                    session=Depends(get_database)):
-    product = session.query(Product).filter_by(uuid=data.product_uuid).first()
+@router.post("/calculate/", response_model=CustomerProductsCalculation)
+async def calculate(
+    products: list[CustomerProductCalculationRequest] = Body(
+        ...,
+        description="List of product calculation requests. Each must have a unique product_uuid."
+    ),
+    session=Depends(get_database)
+):
+    seen_uuids = set()
+    product_results: list[ProductCalculationResult] = []
+    total_final_price = 0
+    total_before_price = 0
+    total_saving = 0
 
-    if not product:
-        raise HTTPException(status_code=404, detail="Product not found.")
+    for request_data in products:
+        product_uuid = request_data.product_uuid
 
-    product_plan = session.query(ProductPlan).filter_by(
-        uuid=data.product_plan_uuid).first()
+        if product_uuid in seen_uuids:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Duplicate product_uuid: {product_uuid}")
+        seen_uuids.add(product_uuid)
 
-    if not product_plan or product_plan.product.uuid != product.uuid:
-        raise HTTPException(404, detail="Plan does not exist on that product.")
+        product = session.query(Product).filter_by(uuid=product_uuid).first()
+        if not product:
+            raise HTTPException(status_code=404, detail="Product not found.")
 
-    voucher = None
+        plan = session.query(ProductPlan).filter_by(
+            uuid=request_data.product_plan_uuid).first()
+        if not plan or plan.product.uuid != product.uuid:
+            raise HTTPException(status_code=404,
+                                detail="Plan does not exist on that product.")
 
-    if data.voucher_uuid:
-        voucher = session.query(Voucher).filter_by(
-            uuid=data.voucher_uuid).first()
+        voucher = None
+        if request_data.voucher_uuid:
+            voucher = session.query(Voucher).filter_by(
+                uuid=request_data.voucher_uuid).first()
+            if not voucher or not voucher.valid or voucher.product_plan != plan.uuid:
+                raise HTTPException(
+                    status_code=404, detail="Voucher not valid.")
 
-        if not voucher or not voucher.valid or voucher.product_plan != product_plan.uuid:
-            raise HTTPException(404, detail="Voucher not valid.")
+        final_price, before_price = calculate_full_pricing_in_euro(
+            plan, voucher)
+        saving = before_price - final_price
 
-    final_price, before_price = calculate_full_pricing_in_euro(
-        product_plan, voucher)
-    saving = before_price - final_price
+        total_final_price += final_price
+        total_before_price += before_price
+        total_saving += saving
 
-    return {"final_price": final_price,
-            "before_price": before_price, "saving": saving}
+        product_results.append(ProductCalculationResult(
+            product_uuid=product_uuid,
+            calculation=CustomerProductCalculation(
+                final_price=final_price,
+                before_price=before_price,
+                saving=saving
+            )
+        ))
+
+    return CustomerProductsCalculation(
+        overall=CustomerProductCalculation(
+            final_price=total_final_price,
+            before_price=total_before_price,
+            saving=total_saving
+        ),
+        products=product_results
+    )
 
 
 @router.delete("/{uuid}")
