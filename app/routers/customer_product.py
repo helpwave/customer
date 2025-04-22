@@ -98,7 +98,7 @@ async def create(
         product_uuid=data.product_uuid,
         product_plan_uuid=data.product_plan_uuid,
         voucher_uuid=data.voucher_uuid,
-        status=CustomerProductStatusEnum.PENDING_ACTIVATION,
+        status=CustomerProductStatusEnum.ACTIVATION,
         start_date=datetime.now(),
         end_date=(
             datetime.now() + relativedelta(months=+product_plan.recurring_month)
@@ -235,7 +235,7 @@ async def delete(
     if not customer_product or customer_product.customer_uuid != user.customer_uuid:
         raise HTTPException(status_code=404, detail="Product not found.")
 
+    customer_product.status = CustomerProductStatusEnum.SCHEDULED
     customer_product.cancellation_date = datetime.now()
-    customer_product.status = CustomerProductStatusEnum.CANCELLATION_SCHEDULED,
 
     session.commit()

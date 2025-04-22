@@ -25,7 +25,11 @@ class CustomerProduct(Base):
     product_plan_uuid = Column(
         UUID(as_uuid=True), ForeignKey("product_plans.uuid"), nullable=False
     )
-    status = Column(Enum(CustomerProductStatusEnum), nullable=False)
+    status = Column(
+        Enum(CustomerProductStatusEnum),
+        nullable=False,
+        default=CustomerProductStatusEnum.ACTIVE,
+    )
     seats = Column(Integer, nullable=True)
     start_date = Column(DateTime, nullable=False)
     end_date = Column(DateTime, nullable=False)

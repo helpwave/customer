@@ -1,8 +1,8 @@
 """initialize models
 
-Revision ID: 067f32395ad5
+Revision ID: a4b841bf907c
 Revises: 
-Create Date: 2025-04-22 14:39:11.438511
+Create Date: 2025-04-22 15:23:17.189505
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '067f32395ad5'
+revision: str = 'a4b841bf907c'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -119,7 +119,7 @@ def upgrade() -> None:
     sa.Column('customer_uuid', sa.UUID(), nullable=False),
     sa.Column('product_uuid', sa.UUID(), nullable=False),
     sa.Column('product_plan_uuid', sa.UUID(), nullable=False),
-    sa.Column('status', sa.Enum('TRIALING', 'ACTIVE', 'PENDING_ACTIVATION', 'PENDING_PAYMENT', 'CANCELLATION_SCHEDULED', 'CANCELED', 'EXPIRED', 'REFUNDED', name='customerproductstatusenum'), nullable=False),
+    sa.Column('status', sa.Enum('TRIALING', 'ACTIVE', 'ACTIVATION', 'PAYMENT', 'SCHEDULED', 'CANCELED', 'EXPIRED', 'REFUNDED', name='customerproductstatusenum'), nullable=False),
     sa.Column('seats', sa.Integer(), nullable=True),
     sa.Column('start_date', sa.DateTime(), nullable=False),
     sa.Column('end_date', sa.DateTime(), nullable=False),

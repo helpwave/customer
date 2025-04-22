@@ -65,9 +65,9 @@ WebURL: str = Field(
 class CustomerProductStatusEnum(PyEnum):
     TRIALING = "trialing"
     ACTIVE = "active"
-    PENDING_ACTIVATION = "pending_activation"
-    PENDING_PAYMENT = "pending_payment"
-    CANCELLATION_SCHEDULED = "cancellation_scheduled"
+    ACTIVATION = "activation"
+    PAYMENT = "payment"
+    SCHEDULED = "scheduled"
     CANCELED = "canceled"
     EXPIRED = "expired"
     REFUNDED = "refunded"
