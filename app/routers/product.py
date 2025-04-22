@@ -1,10 +1,10 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
-
 from models.customer_product import CustomerProduct
 from models.product import Product, ProductBase
 from models.user import User
+from sqlalchemy import select
 from utils.database.session import get_database
 from utils.security.token import get_user
 
@@ -38,6 +38,7 @@ async def available(user: User = Depends(get_user),
     booked_product_uuids = session.query(CustomerProduct.product_uuid).filter(
         CustomerProduct.customer_uuid == user.customer_uuid).subquery()
     available_products = session.query(Product).filter(
-        ~Product.uuid.in_(booked_product_uuids)).all()
+        ~Product.uuid.in_(select(booked_product_uuids.c.product_uuid))
+    ).all()
 
     return available_products
