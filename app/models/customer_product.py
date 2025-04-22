@@ -2,14 +2,14 @@ from datetime import datetime
 from uuid import UUID as UUID4
 from uuid import uuid4
 
-from pydantic import BaseModel
-from sqlalchemy import Column, DateTime, ForeignKey, Integer
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
-
 from models.product import ProductBase
 from models.product_plan import ProductPlanBase
+from pydantic import BaseModel
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, Enum
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 from utils.database.connection import Base
+from models.static import CustomerProductStatusEnum
 
 
 class CustomerProduct(Base):
@@ -25,6 +25,7 @@ class CustomerProduct(Base):
     product_plan_uuid = Column(
         UUID(as_uuid=True), ForeignKey("product_plans.uuid"), nullable=False
     )
+    status = Column(Enum(CustomerProductStatusEnum), nullable=False)
     seats = Column(Integer, nullable=True)
     start_date = Column(DateTime, nullable=False)
     end_date = Column(DateTime, nullable=False)
@@ -49,6 +50,7 @@ class CustomerProductBase(BaseModel):
     customer_uuid: UUID4
     product_uuid: UUID4
     product_plan_uuid: UUID4
+    status: CustomerProductStatusEnum
     seats: int | None
     start_date: datetime
     next_payment_date: datetime | None
@@ -63,6 +65,7 @@ class ExtendedCustomerProductBase(BaseModel):
     customer_uuid: UUID4
     product: ProductBase
     product_plan: ProductPlanBase
+    status: CustomerProductStatusEnum
     seats: int | None
     start_date: datetime
     next_payment_date: datetime | None
@@ -89,6 +92,7 @@ class CustomerProductCalculation(BaseModel):
     final_price: float
     before_price: float
     saving: float
+    tax: float = 0
 
 
 class ProductCalculationResult(BaseModel):

@@ -3,7 +3,6 @@ from uuid import UUID
 
 from dateutil.relativedelta import relativedelta
 from fastapi import APIRouter, Body, Depends, HTTPException
-
 from models.customer import User
 from models.customer_product import (
     CustomerProduct,
@@ -20,7 +19,7 @@ from models.invoice import Invoice
 from models.product import Product
 from models.product_contract import ProductContract
 from models.product_plan import ProductPlan
-from models.static import PlanTypeEnum
+from models.static import CustomerProductStatusEnum, PlanTypeEnum
 from models.voucher import Voucher
 from utils.calculation.pricing import (
     calculate_full_pricing_in_euro,
@@ -99,6 +98,7 @@ async def create(
         product_uuid=data.product_uuid,
         product_plan_uuid=data.product_plan_uuid,
         voucher_uuid=data.voucher_uuid,
+        status=CustomerProductStatusEnum.PENDING_ACTIVATION,
         start_date=datetime.now(),
         end_date=(
             datetime.now() + relativedelta(months=+product_plan.recurring_month)
@@ -133,9 +133,8 @@ async def create(
 
 
 @router.get("/{uuid}", response_model=CustomerProductBase)
-async def read(
-    uuid: UUID, user: User = Depends(get_user), session=Depends(get_database)
-):
+async def read(uuid: UUID, user: User = Depends(
+        get_user), session=Depends(get_database)):
     customer_product = session.query(
         CustomerProduct).filter_by(uuid=uuid).first()
 
@@ -164,6 +163,7 @@ async def calculate(
     seen_uuids = set()
     product_results: list[ProductCalculationResult] = []
     total_final_price = 0
+    total_taxes = 0
     total_before_price = 0
     total_saving = 0
 
@@ -197,17 +197,20 @@ async def calculate(
         final_price, before_price = calculate_full_pricing_in_euro(
             plan, voucher)
         saving = before_price - final_price
+        tax = 0.19 * final_price
 
         total_final_price += final_price
         total_before_price += before_price
         total_saving += saving
+        total_taxes += tax
 
         product_results.append(ProductCalculationResult(
             product_uuid=product_uuid,
             calculation=CustomerProductCalculation(
                 final_price=final_price,
                 before_price=before_price,
-                saving=saving
+                saving=saving,
+                tax=tax
             )
         ))
 
@@ -215,7 +218,8 @@ async def calculate(
         overall=CustomerProductCalculation(
             final_price=total_final_price,
             before_price=total_before_price,
-            saving=total_saving
+            saving=total_saving,
+            tax=total_taxes
         ),
         products=product_results
     )
@@ -232,5 +236,6 @@ async def delete(
         raise HTTPException(status_code=404, detail="Product not found.")
 
     customer_product.cancellation_date = datetime.now()
+    customer_product.status = CustomerProductStatusEnum.CANCELLATION_SCHEDULED,
 
     session.commit()
